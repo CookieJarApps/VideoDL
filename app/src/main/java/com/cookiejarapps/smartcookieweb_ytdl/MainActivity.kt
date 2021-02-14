@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.yausername.ffmpeg.FFmpeg
 import com.yausername.youtubedl_android.YoutubeDL
 import com.yausername.youtubedl_android.YoutubeDLException
 
@@ -26,6 +27,7 @@ class MainActivity : AppCompatActivity() {
     private fun initialize(){
         try {
             YoutubeDL.getInstance().init(application)
+            FFmpeg.getInstance().init(application)
         } catch (e: YoutubeDLException) {
             Log.e(TAG, "failed to initialize youtubedl-android", e)
         }
