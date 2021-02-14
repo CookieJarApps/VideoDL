@@ -1,3 +1,3 @@
 # SmartCookieWeb-ytdl
 
-Video downloading plugin for SmartCookieWeb. Support SmartCookieWeb v13.0+.
+Download videos from 100+ sites using youtubedl and watch YouTube ad-free with SmartCookieWeb. Supports SmartCookieWeb v13.0+.
