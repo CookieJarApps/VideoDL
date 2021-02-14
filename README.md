@@ -1,8 +1,8 @@
-# SmartCookieWeb-ytdl
+<h2 align="center"><b>SmartCookieWeb-ytdl</b></h2>
 
-Download videos from 100+ sites using youtubedl and watch YouTube ad-free with SmartCookieWeb. 
+<h4 align="center">Download and watch videos ad-free from 100+ sites using youtube-dl.</h4>
 
-Built with [youtube-dl](https://https://github.com/ytdl-org/youtube-dl) and [youtube-dl-android](https://github.com/yausername/youtubedl-android)
+Built with [youtube-dl](https://https://github.com/ytdl-org/youtube-dl) and [youtube-dl-android](https://github.com/yausername/youtubedl-android).
 
 # Usage
 
