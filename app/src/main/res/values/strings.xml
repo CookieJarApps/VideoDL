@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">SmartCookieWeb-ytdl</string>
+    <string name="app_required">SmartCookieWeb doesn\'t appear to be installed on your device. This app requires SmartCookieWeb to function.</string>
+    <string name="app_successful">Open SmartCookieWeb and navigate to a video page to download.</string>
 </resources>
