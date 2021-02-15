@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.cookiejarapps.smartcookieweb_ytdl
 
 import android.app.Application
