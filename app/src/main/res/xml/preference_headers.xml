@@ -3,12 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Preference
-        android:key="update_youtubedl"
-        android:title="@string/youtubedl_update"
-        android:icon="@drawable/ic_video"
-        app:iconSpaceReserved="true" />
-
-    <Preference
         android:key="download"
         android:title="@string/download_location_title"
         android:icon="@drawable/ic_download"
