@@ -1,5 +1,28 @@
 <resources>
-    <string name="app_name">SmartCookieWeb-ytdl</string>
-    <string name="app_required">SmartCookieWeb doesn\'t appear to be installed on your device. This app requires SmartCookieWeb to function.</string>
-    <string name="app_successful">Open SmartCookieWeb and navigate to a video page to download.</string>
+    <string name="app_name" translatable="false">VideoDL</string>
+    <string name="youtubedl" translatable="false">youtube-dl</string>
+    <string name="startup_error">youtube-dl could not be started</string>
+    <string name="placeholder">None</string>
+    <string name="app_successful">Enter an URL below, or navigate to an URL in SmartCookieWeb.</string>
+    <string name="data">Getting video data…</string>
+    <string name="video">Video</string>
+    <string name="downloads">Downloads</string>
+    <string name="watch">Watch</string>
+    <string name="settings">Settings</string>
+    <string name="delete_download">Remove this download from list?</string>
+    <string name="url">URL</string>
+    <string name="app_not_found">No app found on device for opening this content</string>
+    <string name="download_location_title">Download location</string>
+    <string name="action_choose_folder">Choose folder</string>
+    <string name="download_already_running">A download is already running</string>
+    <string name="download_queued">Download queued</string>
+    <string name="invalid_download_location">Invalid download location</string>
+    <string name="choose_download_location_title">Choose directory</string>
+    <string name="invalid_url">Invalid url</string>
+    <string name="download_start">Starting download</string>
+    <string name="downloading">Downloading…</string>
+    <string name="copyright_warning">Using a copyrighted work without permission is copyright infringement and may be illegal in the country you live in. CookieJarApps is not responsible for any copyright infringements.</string>
+    <string name="copyright">Copyright</string>
+    <string name="cancel">Cancel</string>
+    <string name="accept">Accept</string>
 </resources>
