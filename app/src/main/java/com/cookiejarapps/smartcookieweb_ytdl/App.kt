@@ -23,7 +23,7 @@ class App : Application() {
                     FFmpeg.getInstance().init(this@App)
                 }
             } catch (e: Exception) {
-                Toast.makeText(applicationContext, R.string.init_fail, Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, R.string.startup_error, Toast.LENGTH_SHORT).show()
                 Log.e("App", e.toString())
             }
         }
