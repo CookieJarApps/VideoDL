@@ -1,4 +1,4 @@
-<h2 align="center"><b>SmartCookieWeb-ytdl</b></h2>
+<h2 align="center"><b>VideoDL</b></h2>
 
 <h4 align="center">Download and watch videos ad-free from 100+ sites using youtube-dl.</h4>
 
