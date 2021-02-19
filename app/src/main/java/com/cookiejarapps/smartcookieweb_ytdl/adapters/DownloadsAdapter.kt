@@ -25,6 +25,10 @@ class DownloadsAdapter : RecyclerView.Adapter<DownloadsAdapter.ViewHolder>() {
         notifyDataSetChanged()
     }
 
+    fun getDownloadList(): List<Download>{
+        return downloadList
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.download_row, parent, false)
         return ViewHolder(view)
@@ -40,24 +44,9 @@ class DownloadsAdapter : RecyclerView.Adapter<DownloadsAdapter.ViewHolder>() {
                 "video" ->icon.setImageResource(R.drawable.ic_video)
                 else ->icon.setImageResource(R.drawable.ic_download)
             }
-            setOnClickListener {
-                openFile(downloadList[position].downloadPath, it.context)
-            }
         }
     }
 
     override fun getItemCount() = downloadList.size
 
-    private fun openFile(filePath: String, context: Context) {
-        val intent = Intent(Intent.ACTION_VIEW)
-        val fileURI = Uri.parse(filePath)
-        val mimeType = context.contentResolver.getType(fileURI) ?: "*/*"
-        intent.setDataAndType(fileURI, mimeType)
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        if (intent.resolveActivity(context.packageManager) != null) {
-            startActivity(context, intent, null)
-        } else {
-            Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
-        }
-    }
 }
