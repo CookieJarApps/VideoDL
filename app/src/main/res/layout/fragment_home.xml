@@ -6,7 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.cookiejarapps.smartcookieweb_ytdl.MainActivity"
-    tools:showPaths="true">
+    tools:showPaths="true"
+    android:focusableInTouchMode="true"
+    android:clickable="true"
+    android:focusable="true">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/video_list"
@@ -43,7 +46,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/urlEditText" />
+        app:layout_constraintTop_toBottomOf="@id/urlInputLayout" />
 
     <TextView
         android:id="@+id/loading_text"
@@ -71,21 +74,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/urlEditText"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/urlInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="51dp"
         android:layout_marginEnd="16dp"
-        android:imeOptions="actionGo"
-        android:imeActionId="373"
-        android:imeActionLabel="Search"
-        android:ems="10"
-        android:hint="@string/url"
-        android:inputType="textUri"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/start_text" />
+        app:layout_constraintTop_toBottomOf="@+id/start_text"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        app:endIconMode="custom"
+        app:endIconDrawable="@drawable/ic_round_check_circle">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/urlEditText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:ems="10"
+            android:hint="@string/url"
+            android:imeActionId="373"
+            android:imeActionLabel="Search"
+            android:imeOptions="actionGo"
+            android:inputType="textUri" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

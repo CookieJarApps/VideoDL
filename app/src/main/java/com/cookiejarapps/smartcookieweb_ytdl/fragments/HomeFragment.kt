@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.inputmethodservice.InputMethodService
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,9 +15,9 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.core.content.ContextCompat.checkSelfPermission
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
@@ -73,6 +74,20 @@ class HomeFragment : Fragment(),
             handled
         }
 
+        urlInputLayout.setEndIconOnClickListener {
+            val vidFormatsVm =
+                ViewModelProvider(activity as MainActivity).get(VideoInfoViewModel::class.java)
+            vidFormatsVm.fetchInfo(urlEditText.text.toString())
+            view.let { activity?.hideKeyboard(it) }
+        }
+
+        urlEditText.setOnFocusChangeListener { _: View, b: Boolean ->
+            if (!b) {
+                val inputMethodManager = requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+                inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+            }
+        }
+
         val videoFormatsModel =
             ViewModelProvider(activity as MainActivity).get(VideoInfoViewModel::class.java)
         with(view.video_list) {
@@ -99,6 +114,7 @@ class HomeFragment : Fragment(),
                     loading_text.visibility = GONE
                     video_list.visibility = GONE
                     urlEditText.visibility = VISIBLE
+                    urlInputLayout.visibility = VISIBLE
                     start_text.visibility = VISIBLE
                     error_text.visibility = GONE
                 }
@@ -106,6 +122,7 @@ class HomeFragment : Fragment(),
                     loading_indicator.visibility = VISIBLE
                     loading_text.visibility = VISIBLE
                     urlEditText.visibility = GONE
+                    urlInputLayout.visibility = GONE
                     start_text.visibility = GONE
                     video_list.visibility = GONE
                     error_text.visibility = GONE
@@ -115,6 +132,7 @@ class HomeFragment : Fragment(),
                     loading_text.visibility = GONE
                     start_text.visibility = GONE
                     urlEditText.visibility = GONE
+                    urlInputLayout.visibility = GONE
                     video_list.visibility = VISIBLE
                 }
                 LoadState.ERRORED -> {

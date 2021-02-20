@@ -60,11 +60,14 @@ class VideoAdapter(private val clickListener: VideoInfoListener) :
                 val vidFormat = vidItem.vidFormat
                 with(holder.itemView) {
                     name.text = vidFormat.format
-                    type.text = vidFormat.ext
                     if (vidFormat.acodec != "none" && vidFormat.vcodec == "none") {
                         icon.setImageResource(R.drawable.ic_audio)
+                        type.text =
+                            "${vidFormat.ext}"
                     } else {
                         icon.setImageResource(R.drawable.ic_video)
+                        type.text =
+                            "${vidFormat.ext}, ${vidItem.vidFormat.width}x${vidItem.vidFormat.height}"
                     }
                     setOnClickListener { clickListener.onClick(vidItem) }
                 }
