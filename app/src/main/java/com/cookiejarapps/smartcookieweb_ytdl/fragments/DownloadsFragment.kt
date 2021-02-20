@@ -73,7 +73,9 @@ class DownloadsFragment : Fragment() {
                 list,
                 object : DownloadListListener {
                     override fun onClick(view: View?, position: Int) {
-                        openFile((list.adapter as DownloadsAdapter).getDownloadList()[position].downloadPath, requireContext())
+                        if((list.adapter as DownloadsAdapter).getDownloadList()[position].downloadPercent == 100.00){
+                            openFile((list.adapter as DownloadsAdapter).getDownloadList()[position].downloadPath, requireContext())
+                        }
                     }
 
                     override fun onLongClick(view: View?, position: Int) {
@@ -81,8 +83,8 @@ class DownloadsFragment : Fragment() {
                         val builder = AlertDialog.Builder(requireContext())
                         builder.setTitle((list.adapter as DownloadsAdapter).getDownloadList()[position].name)
 
-                        val animals = arrayOf(resources.getString(R.string.delete_download), resources.getString(R.string.delete_download_device))
-                        builder.setItems(animals) { dialog, which ->
+                        val downloads = arrayOf(resources.getString(R.string.delete_download), resources.getString(R.string.delete_download_device))
+                        builder.setItems(downloads) { _, which ->
                             when (which) {
                                 0 -> {
                                     val downloadsDao = DownloadDatabase.getDatabase(
@@ -99,8 +101,6 @@ class DownloadsFragment : Fragment() {
                                     (list.adapter as DownloadsAdapter).updateDataSet(updatedList)
                                 }
                                 1 -> {
-                                    val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
-
                                     val downloadsDao = DownloadDatabase.getDatabase(
                                         context!!
                                     ).downloadsDao()
