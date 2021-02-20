@@ -6,6 +6,10 @@ Built with [youtube-dl](https://https://github.com/ytdl-org/youtube-dl) and [you
 
 # Usage
 
+## In-app
+Enter the URL of a video in the box, or "share" a link from any with the app to download a video.
+
+## SmartCookieWeb intergration
 In SmartCookieWeb 13.0+, navigate to the video page and press the download button in the navbar. The page to download the video will open.
 
 In lower versions of the browser, open the dropdown menu, choose the "Share" option, and select SmartCookieWeb-ytdl.
