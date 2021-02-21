@@ -33,6 +33,7 @@
             android:layout_height="0dp"
             android:breakStrategy="simple"
             android:ellipsize="end"
+            android:scrollHorizontally="false"
             android:singleLine="true"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             app:layout_constraintBottom_toTopOf="@id/type"
