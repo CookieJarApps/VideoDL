@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.yausername.youtubedl_android.mapper.VideoInfo
 import com.cookiejarapps.smartcookieweb_ytdl.R
+import com.cookiejarapps.smartcookieweb_ytdl.Utils
 import com.cookiejarapps.smartcookieweb_ytdl.item.VideoInfoItem
 import kotlinx.android.synthetic.main.video_info.view.*
 import kotlinx.android.synthetic.main.video_row.view.*
@@ -58,16 +59,18 @@ class VideoAdapter(private val clickListener: VideoInfoListener) :
             is ViewHolder -> {
                 val vidItem = getItem(position) as VideoInfoItem.VideoFormatItem
                 val vidFormat = vidItem.vidFormat
+                val size = Utils.fileSizeToString(vidFormat.filesize)
+
                 with(holder.itemView) {
                     name.text = vidFormat.format
                     if (vidFormat.acodec != "none" && vidFormat.vcodec == "none") {
                         icon.setImageResource(R.drawable.ic_audio)
-                        type.text =
-                            "${vidFormat.ext}"
+                        info.text =
+                            "${vidFormat.ext}, ${size}"
                     } else {
                         icon.setImageResource(R.drawable.ic_video)
-                        type.text =
-                            "${vidFormat.ext}, ${vidItem.vidFormat.width}x${vidItem.vidFormat.height}"
+                        info.text =
+                            "${vidFormat.ext}, ${size}, ${vidItem.vidFormat.width}x${vidItem.vidFormat.height}"
                     }
                     setOnClickListener { clickListener.onClick(vidItem) }
                 }

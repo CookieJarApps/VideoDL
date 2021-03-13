@@ -36,13 +36,13 @@
             android:scrollHorizontally="false"
             android:singleLine="true"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            app:layout_constraintBottom_toTopOf="@id/type"
+            app:layout_constraintBottom_toTopOf="@id/info"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/icon"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/type"
+            android:id="@+id/info"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:textAlignment="viewStart"
