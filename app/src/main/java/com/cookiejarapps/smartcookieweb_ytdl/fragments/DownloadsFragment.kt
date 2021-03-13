@@ -79,49 +79,60 @@ class DownloadsFragment : Fragment() {
                     }
 
                     override fun onLongClick(view: View?, position: Int) {
-                        // setup the alert builder
-                        val builder = AlertDialog.Builder(requireContext())
-                        builder.setTitle((list.adapter as DownloadsAdapter).getDownloadList()[position].name)
+                        if((list.adapter as DownloadsAdapter).getDownloadList()[position].downloadPercent == 100.00) {
+                            val builder = AlertDialog.Builder(requireContext())
+                            builder.setTitle((list.adapter as DownloadsAdapter).getDownloadList()[position].name)
 
-                        val downloads = arrayOf(resources.getString(R.string.delete_download), resources.getString(R.string.delete_download_device))
-                        builder.setItems(downloads) { _, which ->
-                            when (which) {
-                                0 -> {
-                                    val downloadsDao = DownloadDatabase.getDatabase(
-                                        context!!
-                                    ).downloadsDao()
-                                    val repository =
-                                        DownloadsRepository(downloadsDao)
+                            val downloads = arrayOf(
+                                resources.getString(R.string.delete_download),
+                                resources.getString(R.string.delete_download_device)
+                            )
+                            builder.setItems(downloads) { _, which ->
+                                when (which) {
+                                    0 -> {
+                                        val downloadsDao = DownloadDatabase.getDatabase(
+                                            context!!
+                                        ).downloadsDao()
+                                        val repository =
+                                            DownloadsRepository(downloadsDao)
 
-                                    GlobalScope.launch {
-                                        repository.deleteDownloads((list.adapter as DownloadsAdapter).getDownloadList()[position])
+                                        GlobalScope.launch {
+                                            repository.deleteDownloads((list.adapter as DownloadsAdapter).getDownloadList()[position])
+                                        }
+
+                                        val updatedList =
+                                            (list.adapter as DownloadsAdapter).getDownloadList()
+                                                .drop(position)
+                                        (list.adapter as DownloadsAdapter).updateDataSet(updatedList)
                                     }
+                                    1 -> {
+                                        val downloadsDao = DownloadDatabase.getDatabase(
+                                            context!!
+                                        ).downloadsDao()
+                                        val repository =
+                                            DownloadsRepository(downloadsDao)
 
-                                    val updatedList = (list.adapter as DownloadsAdapter).getDownloadList().drop(position)
-                                    (list.adapter as DownloadsAdapter).updateDataSet(updatedList)
-                                }
-                                1 -> {
-                                    val downloadsDao = DownloadDatabase.getDatabase(
-                                        context!!
-                                    ).downloadsDao()
-                                    val repository =
-                                        DownloadsRepository(downloadsDao)
+                                        DocumentFile.fromSingleUri(
+                                            requireContext(),
+                                            (list.adapter as DownloadsAdapter).getDownloadList()[position].downloadPath.toUri()
+                                        )?.delete()
 
-                                    DocumentFile.fromSingleUri(requireContext(), (list.adapter as DownloadsAdapter).getDownloadList()[position].downloadPath.toUri())?.delete()
+                                        GlobalScope.launch {
+                                            repository.deleteDownloads((list.adapter as DownloadsAdapter).getDownloadList()[position])
+                                        }
 
-                                    GlobalScope.launch {
-                                        repository.deleteDownloads((list.adapter as DownloadsAdapter).getDownloadList()[position])
+                                        val updatedList =
+                                            (list.adapter as DownloadsAdapter).getDownloadList()
+                                                .drop(position)
+                                        (list.adapter as DownloadsAdapter).updateDataSet(updatedList)
+
                                     }
-
-                                    val updatedList = (list.adapter as DownloadsAdapter).getDownloadList().drop(position)
-                                    (list.adapter as DownloadsAdapter).updateDataSet(updatedList)
-
                                 }
                             }
-                        }
 
-                        val dialog = builder.create()
-                        dialog.show()
+                            val dialog = builder.create()
+                            dialog.show()
+                        }
                     }
                 })
         )
