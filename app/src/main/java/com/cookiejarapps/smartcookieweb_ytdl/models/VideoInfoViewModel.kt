@@ -1,12 +1,11 @@
 package com.cookiejarapps.smartcookieweb_ytdl.models
 
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cookiejarapps.smartcookieweb_ytdl.item.VideoInfoItem
 import com.yausername.youtubedl_android.YoutubeDL
+import com.yausername.youtubedl_android.YoutubeDLRequest
 import com.yausername.youtubedl_android.mapper.VideoInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,7 +15,7 @@ class VideoInfoViewModel : ViewModel() {
 
     val vidFormats: MutableLiveData<VideoInfo> = MutableLiveData()
     val loadState: MutableLiveData<LoadState> = MutableLiveData(LoadState.INITIAL)
-    private val thumbnail: MutableLiveData<String> = MutableLiveData()
+    val url: MutableLiveData<String> = MutableLiveData()
     lateinit var selectedItem: VideoInfoItem.VideoFormatItem
 
     private fun submit(vidInfoItems: VideoInfo?) {
@@ -27,27 +26,37 @@ class VideoInfoViewModel : ViewModel() {
         this.loadState.postValue(loadState)
     }
 
-    private fun updateThumbnail(thumbnail: String?) {
-        this.thumbnail.postValue(thumbnail)
+    private fun updateUrl(url: String?) {
+        this.url.postValue(url)
     }
 
     fun fetchInfo(url: String) {
         viewModelScope.launch {
             updateLoading(LoadState.LOADING)
             submit(null)
-            updateThumbnail(null)
+            updateUrl(null)
             lateinit var vidInfo: VideoInfo
+            lateinit var bestQualityUrl: String
             try {
                 withContext(Dispatchers.IO) {
+                    // Get video data
                     vidInfo = YoutubeDL.getInstance().getInfo(url)
+
+                    // Get high quality URL for playback
+                    val request = YoutubeDLRequest(url)
+                    request.addOption("-f", "best")
+                    val streamInfo = YoutubeDL.getInstance().getInfo(request)
+                    bestQualityUrl = streamInfo.url
                 }
             } catch (e: Exception) {
                 updateLoading(LoadState.ERRORED)
                 return@launch
             }
 
+            updateUrl(bestQualityUrl)
+
             updateLoading(LoadState.LOADED)
-            updateThumbnail(vidInfo.thumbnail)
+
             submit(vidInfo)
         }
     }

@@ -17,6 +17,7 @@ import com.cookiejarapps.smartcookieweb_ytdl.database.Download
 import com.cookiejarapps.smartcookieweb_ytdl.database.DownloadsRepository
 import com.yausername.youtubedl_android.YoutubeDL
 import com.yausername.youtubedl_android.YoutubeDLRequest
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.apache.commons.io.IOUtils
@@ -87,8 +88,14 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) :
         try {
             YoutubeDL.getInstance()
                 .execute(request) { progress, _ ->
-                    showProgress(id.hashCode(), name, progress.toInt(), timestamp)
+                    if(isStopped){
+                        tmpFile.deleteRecursively()
+                    }
+                    else{
+                        showProgress(id.hashCode(), name, progress.toInt(), timestamp)
+                    }
                 }
+
             val treeUri = Uri.parse(downloadDir)
             val docId = DocumentsContract.getTreeDocumentId(treeUri)
             val destDir = DocumentsContract.buildDocumentUriUsingTree(treeUri, docId)

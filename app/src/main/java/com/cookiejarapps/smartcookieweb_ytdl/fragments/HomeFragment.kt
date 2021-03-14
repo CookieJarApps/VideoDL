@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.inputmethodservice.InputMethodService
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -18,8 +17,8 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat.checkSelfPermission
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import androidx.work.*
@@ -39,13 +38,19 @@ import com.cookiejarapps.smartcookieweb_ytdl.worker.DownloadWorker.Companion.siz
 import com.cookiejarapps.smartcookieweb_ytdl.worker.DownloadWorker.Companion.urlKey
 import com.cookiejarapps.smartcookieweb_ytdl.worker.DownloadWorker.Companion.videoCodecKey
 import com.cookiejarapps.smartcookieweb_ytdl.worker.DownloadWorker.Companion.videoId
+import com.google.android.exoplayer2.C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+import com.huxq17.download.DownloadProvider
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 
-
 class HomeFragment : Fragment(),
     SAFDialogFragment.DialogListener {
-    
+
+    lateinit var player: SimpleExoPlayer
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -65,6 +70,10 @@ class HomeFragment : Fragment(),
     }
 
     private fun initialize(view: View) {
+        player = SimpleExoPlayer.Builder(DownloadProvider.context).build()
+        video_player.player = player
+        video_player.resizeMode = RESIZE_MODE_ZOOM
+
         urlEditText.setOnEditorActionListener { v, actionId, event ->
             val handled = false
             if (actionId == EditorInfo.IME_ACTION_GO) {
@@ -120,6 +129,7 @@ class HomeFragment : Fragment(),
                     start_text.visibility = VISIBLE
                     error_text.visibility = GONE
                     app_icon.visibility = VISIBLE
+                    video_player.visibility = GONE
                 }
                 LoadState.LOADING -> {
                     loading_indicator.visibility = VISIBLE
@@ -130,6 +140,7 @@ class HomeFragment : Fragment(),
                     video_list.visibility = GONE
                     error_text.visibility = GONE
                     app_icon.visibility = GONE
+                    video_player.visibility = GONE
                 }
                 LoadState.LOADED -> {
                     loading_indicator.visibility = GONE
@@ -139,6 +150,7 @@ class HomeFragment : Fragment(),
                     urlInputLayout.visibility = GONE
                     video_list.visibility = VISIBLE
                     app_icon.visibility = GONE
+                    video_player.visibility = VISIBLE
                 }
                 LoadState.ERRORED -> {
                     loading_indicator.visibility = GONE
@@ -147,7 +159,15 @@ class HomeFragment : Fragment(),
                     urlEditText.visibility = VISIBLE
                     start_text.visibility = VISIBLE
                     error_text.visibility = VISIBLE
+                    video_player.visibility = GONE
                 }
+            }
+        })
+        videoFormatsModel.url.observe(viewLifecycleOwner, Observer {
+            it?.apply {
+                val mediaItem: MediaItem = MediaItem.fromUri(it)
+                player.setMediaItem(mediaItem)
+                player.prepare()
             }
         })
     }
@@ -274,6 +294,11 @@ class HomeFragment : Fragment(),
                 downloadLocationDialogTag
             )
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        player.release()
     }
 
     companion object {
