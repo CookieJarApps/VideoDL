@@ -11,7 +11,7 @@
     <string name="settings">Settings</string>
     <string name="delete_download">Remove from list</string>
     <string name="delete_download_device">Remove from device</string>
-    <string name="url">URL</string>
+    <string name="url">Video URL</string>
     <string name="app_not_found">No app found on device for opening this content</string>
     <string name="download_location_title">Download location</string>
     <string name="action_choose_folder">Choose folder</string>

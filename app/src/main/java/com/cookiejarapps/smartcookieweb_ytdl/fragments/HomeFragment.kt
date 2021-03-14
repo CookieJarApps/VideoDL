@@ -119,6 +119,7 @@ class HomeFragment : Fragment(),
                     urlInputLayout.visibility = VISIBLE
                     start_text.visibility = VISIBLE
                     error_text.visibility = GONE
+                    app_icon.visibility = VISIBLE
                 }
                 LoadState.LOADING -> {
                     loading_indicator.visibility = VISIBLE
@@ -128,6 +129,7 @@ class HomeFragment : Fragment(),
                     start_text.visibility = GONE
                     video_list.visibility = GONE
                     error_text.visibility = GONE
+                    app_icon.visibility = GONE
                 }
                 LoadState.LOADED -> {
                     loading_indicator.visibility = GONE
@@ -136,6 +138,7 @@ class HomeFragment : Fragment(),
                     urlEditText.visibility = GONE
                     urlInputLayout.visibility = GONE
                     video_list.visibility = VISIBLE
+                    app_icon.visibility = GONE
                 }
                 LoadState.ERRORED -> {
                     loading_indicator.visibility = GONE
