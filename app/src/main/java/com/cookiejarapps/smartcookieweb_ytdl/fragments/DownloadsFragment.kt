@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.work.WorkManager
 import com.cookiejarapps.smartcookieweb_ytdl.R
 import com.cookiejarapps.smartcookieweb_ytdl.adapters.DownloadsAdapter
 import com.cookiejarapps.smartcookieweb_ytdl.database.Download
@@ -25,7 +26,9 @@ import com.cookiejarapps.smartcookieweb_ytdl.database.DownloadsRepository
 import com.cookiejarapps.smartcookieweb_ytdl.listener.DownloadListListener
 import com.cookiejarapps.smartcookieweb_ytdl.listener.RecyclerViewClickListener
 import com.cookiejarapps.smartcookieweb_ytdl.models.DownloadsViewModel
+import com.cookiejarapps.smartcookieweb_ytdl.worker.DownloadWorker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.android.synthetic.main.download_row.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
@@ -125,7 +128,40 @@ class DownloadsFragment : Fragment() {
                                             (list.adapter as DownloadsAdapter).getDownloadList()
                                                 .drop(position)
                                         (list.adapter as DownloadsAdapter).updateDataSet(updatedList)
+                                    }
+                                }
+                            }
 
+                            val dialog = builder.create()
+                            dialog.show()
+                        }
+                        else{
+                            val builder = AlertDialog.Builder(requireContext())
+                            builder.setTitle((list.adapter as DownloadsAdapter).getDownloadList()[position].name)
+
+                            val downloads = arrayOf(
+                                resources.getString(R.string.cancel)
+                            )
+                            builder.setItems(downloads) { _, which ->
+                                when (which) {
+                                    0 -> {
+                                        val workManager = WorkManager.getInstance(activity?.applicationContext!!)
+                                        workManager.cancelAllWorkByTag((list.adapter as DownloadsAdapter).getDownloadList()[which].videoId)
+
+                                        val downloadsDao = DownloadDatabase.getDatabase(
+                                            context!!
+                                        ).downloadsDao()
+                                        val repository =
+                                            DownloadsRepository(downloadsDao)
+
+                                        GlobalScope.launch {
+                                            repository.deleteDownloads((list.adapter as DownloadsAdapter).getDownloadList()[position])
+                                        }
+
+                                        val updatedList =
+                                            (list.adapter as DownloadsAdapter).getDownloadList()
+                                                .drop(position)
+                                        (list.adapter as DownloadsAdapter).updateDataSet(updatedList)
                                     }
                                 }
                             }

@@ -23,4 +23,7 @@ data class Download(
 
     @ColumnInfo(name = "file_type")
     lateinit var fileType: String
+
+    @ColumnInfo(name = "video_id")
+    lateinit var videoId: String
 }

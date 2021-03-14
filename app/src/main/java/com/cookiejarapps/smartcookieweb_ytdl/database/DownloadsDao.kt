@@ -19,5 +19,4 @@ interface DownloadsDao {
 
     @Query("SELECT * from downloads_table ORDER BY time DESC")
     fun getAll(): LiveData<List<Download>>
-
 }

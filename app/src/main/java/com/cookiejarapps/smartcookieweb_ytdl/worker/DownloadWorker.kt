@@ -63,6 +63,8 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) :
         download.downloadPercent = 0.00
         download.fileType = if (videoCodec == "none" && audioCodec != "none"){ "audio" } else{ "video" }
 
+        download.videoId = inputData.getString(videoId)!!
+
         repository.insertDownloads(download)
 
         val foregroundInfo = ForegroundInfo(notificationId, notification)
@@ -112,14 +114,16 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) :
 
         GlobalScope.launch {
             val finalDownload = repository.getDownloadByTimestamp(timestamp)
-            finalDownload.downloadPath = destUri.toString()
-            repository.updateDownloads(finalDownload)
+            if(finalDownload != null){
+                finalDownload.downloadPath = destUri.toString()
+                repository.updateDownloads(finalDownload)
+            }
         }
 
         return Result.success()
     }
 
-    private fun showProgress(id: Int, name: String, progress: Int, timestamp: Long) {
+    private fun showProgress(id: Int, name: String, progress: Int = 0, timestamp: Long) {
         val downloadsDao = DownloadDatabase.getDatabase(
             applicationContext
         ).downloadsDao()
@@ -128,8 +132,10 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) :
 
         GlobalScope.launch {
             val download = repository.getDownloadByTimestamp(timestamp)
-            download.downloadPercent = progress.toDouble()
-            repository.updateDownloads(download)
+            if(download != null){
+                download.downloadPercent = progress.toDouble()
+                repository.updateDownloads(download)
+            }
         }
 
         val notification = NotificationCompat.Builder(
@@ -170,6 +176,7 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) :
         const val sizeKey = "size"
         const val audioCodecKey = "acodec"
         const val videoCodecKey = "vcodec"
+        const val videoId = "vid"
     }
 }
 

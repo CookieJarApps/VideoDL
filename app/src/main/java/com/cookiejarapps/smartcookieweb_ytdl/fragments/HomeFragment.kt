@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.inputmethodservice.InputMethodService
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -37,6 +38,7 @@ import com.cookiejarapps.smartcookieweb_ytdl.worker.DownloadWorker.Companion.nam
 import com.cookiejarapps.smartcookieweb_ytdl.worker.DownloadWorker.Companion.sizeKey
 import com.cookiejarapps.smartcookieweb_ytdl.worker.DownloadWorker.Companion.urlKey
 import com.cookiejarapps.smartcookieweb_ytdl.worker.DownloadWorker.Companion.videoCodecKey
+import com.cookiejarapps.smartcookieweb_ytdl.worker.DownloadWorker.Companion.videoId
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 
@@ -196,7 +198,8 @@ class HomeFragment : Fragment(),
             audioCodecKey to videoFormat.acodec,
             videoCodecKey to videoFormat.vcodec,
             downloadDirKey to downloadDir,
-            sizeKey to videoFormat.filesize
+            sizeKey to videoFormat.filesize,
+            videoId to videoInfo.id
         )
         val workRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
             .addTag(workTag)
