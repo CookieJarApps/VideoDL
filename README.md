@@ -4,6 +4,8 @@
 
 Built with [youtube-dl](https://https://github.com/ytdl-org/youtube-dl) and [youtube-dl-android](https://github.com/yausername/youtubedl-android).
 
+<h4 align="center"><b>IMPORTANT NOTE</b> - YouTube has broken this app. I am aware on the issue and am working on a fix.</h4>
+
 # Usage
 
 ## In-app
