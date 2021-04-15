@@ -2,6 +2,7 @@ package com.cookiejarapps.smartcookieweb_ytdl.fragments
 
 import android.Manifest
 import android.app.Activity
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -15,8 +16,12 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.webkit.URLUtil
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.content.ContextCompat.checkSelfPermission
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.text.toSpannable
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -38,7 +43,6 @@ import com.cookiejarapps.smartcookieweb_ytdl.worker.DownloadWorker.Companion.siz
 import com.cookiejarapps.smartcookieweb_ytdl.worker.DownloadWorker.Companion.urlKey
 import com.cookiejarapps.smartcookieweb_ytdl.worker.DownloadWorker.Companion.videoCodecKey
 import com.cookiejarapps.smartcookieweb_ytdl.worker.DownloadWorker.Companion.videoId
-import com.google.android.exoplayer2.C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout.RESIZE_MODE_ZOOM
@@ -93,11 +97,29 @@ class HomeFragment : Fragment(),
         }
 
         urlEditText.setOnFocusChangeListener { _: View, b: Boolean ->
+            val clipboard = requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clipboardItem = clipboard.primaryClip?.getItemAt(0)
+            val pasteData = clipboardItem?.text
+
+            if (pasteData != null && URLUtil.isValidUrl("" + pasteData)) {
+                val suggestions = arrayOf("" + pasteData)
+
+                val autoCompleteAdapter: ArrayAdapter<String> = ArrayAdapter<String>(
+                    requireContext(),
+                    android.R.layout.simple_dropdown_item_1line, suggestions
+                )
+                urlEditText.setAdapter(autoCompleteAdapter)
+            }
+
             if (!b) {
                 val inputMethodManager = requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
                 inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
             }
+            else{
+                urlEditText.showDropDown()
+            }
         }
+
 
         val videoFormatsModel =
             ViewModelProvider(activity as MainActivity).get(VideoInfoViewModel::class.java)

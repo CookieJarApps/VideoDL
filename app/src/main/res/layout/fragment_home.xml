@@ -116,7 +116,7 @@
         app:endIconMode="custom"
         app:endIconDrawable="@drawable/ic_round_check_circle">
 
-        <com.google.android.material.textfield.TextInputEditText
+       <!-- <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/urlEditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -125,7 +125,24 @@
             android:imeActionId="373"
             android:imeActionLabel="Search"
             android:imeOptions="actionGo"
-            android:inputType="textUri" />
+            android:inputType="textUri" /> -->
+
+        <AutoCompleteTextView
+            android:id="@+id/urlEditText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:ems="10"
+            android:hint="@string/url"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:imeActionId="373"
+            android:imeActionLabel="Search"
+            android:imeOptions="actionGo"
+            android:inputType="textUri"
+            android:completionThreshold="0"
+            android:background="@null"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
