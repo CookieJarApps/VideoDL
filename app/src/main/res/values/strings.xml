@@ -30,4 +30,6 @@
     <string name="player">Player</string>
     <string name="part">part</string>
     <string name="parts">parts</string>
+    <string name="update_on_start">Update youtube-dl on app start</string>
+    <string name="update_found">Youtube-dl updated!</string>
 </resources>

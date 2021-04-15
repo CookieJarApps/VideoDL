@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
+import androidx.preference.SwitchPreference
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
@@ -34,6 +35,17 @@ class SettingsFragment : PreferenceFragmentCompat() {
             location?.apply { updatePathInSummary(it, this) } ?: it.setSummary(R.string.placeholder)
             it.onPreferenceClickListener = Preference.OnPreferenceClickListener {
                 openDirectoryChooser()
+                true
+            }
+        }
+
+        val updateOnStart: SwitchPreference? =
+            findPreference(UPDATE_ON_START)
+
+        updateOnStart?.let {
+            it.isEnabled = sharedPrefs.getBoolean(UPDATE_ON_START, true)
+            it.onPreferenceChangeListener = Preference.OnPreferenceChangeListener{ _, value ->
+                sharedPrefs.edit().putBoolean(UPDATE_ON_START, value as Boolean).apply()
                 true
             }
         }
@@ -100,5 +112,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
     companion object {
         private const val OPEN_DIRECTORY_REQUEST_CODE = 42070
         private const val DOWNLOAD_LOCATION = "download"
+        private const val UPDATE_ON_START = "update_on_start"
     }
 }
