@@ -18,11 +18,6 @@
         tools:layout="@layout/fragment_downloads_list" />
 
     <fragment
-        android:id="@+id/player_fragment"
-        android:name="com.cookiejarapps.smartcookieweb_ytdl.fragments.PlayerFragment"
-        android:label="Player" />
-
-    <fragment
         android:id="@+id/settings_fragment"
         android:name="com.cookiejarapps.smartcookieweb_ytdl.fragments.SettingsFragment"
         android:label="Settings" />

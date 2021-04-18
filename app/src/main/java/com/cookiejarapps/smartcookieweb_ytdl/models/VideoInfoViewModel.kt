@@ -54,10 +54,8 @@ class VideoInfoViewModel : ViewModel() {
                 return@launch
             }
 
-            updateUrl(bestQualityUrl)
-
             updateLoading(LoadState.LOADED)
-
+            updateUrl(bestQualityUrl)
             submit(vidInfo)
         }
     }

@@ -145,7 +145,7 @@ class HomeFragment : Fragment(),
                 LoadState.INITIAL -> {
                     loading_indicator.visibility = GONE
                     loading_text.visibility = GONE
-                    video_list.visibility = GONE
+                    //video_list.visibility = GONE
                     urlEditText.visibility = VISIBLE
                     urlInputLayout.visibility = VISIBLE
                     start_text.visibility = VISIBLE
