@@ -8,11 +8,4 @@
         android:icon="@drawable/ic_download"
         app:iconSpaceReserved="true" />
 
-    <SwitchPreference
-        android:key="update_on_start"
-        android:title="@string/update_on_start"
-        android:icon="@drawable/ic_update"
-        android:defaultValue="true"
-        app:iconSpaceReserved="true" />
-
 </PreferenceScreen>

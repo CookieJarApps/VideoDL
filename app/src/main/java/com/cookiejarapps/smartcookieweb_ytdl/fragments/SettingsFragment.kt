@@ -38,17 +38,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 true
             }
         }
-
-        val updateOnStart: SwitchPreference? =
-            findPreference(UPDATE_ON_START)
-
-        updateOnStart?.let {
-            it.isChecked = sharedPrefs.getBoolean(UPDATE_ON_START, true)
-            it.onPreferenceChangeListener = Preference.OnPreferenceChangeListener{ _, value ->
-                sharedPrefs.edit().putBoolean(UPDATE_ON_START, value as Boolean).apply()
-                true
-            }
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -112,6 +101,5 @@ class SettingsFragment : PreferenceFragmentCompat() {
     companion object {
         private const val OPEN_DIRECTORY_REQUEST_CODE = 42070
         private const val DOWNLOAD_LOCATION = "download"
-        private const val UPDATE_ON_START = "update_on_start"
     }
 }
