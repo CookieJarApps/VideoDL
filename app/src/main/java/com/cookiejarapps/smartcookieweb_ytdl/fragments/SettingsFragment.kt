@@ -43,7 +43,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             findPreference(UPDATE_ON_START)
 
         updateOnStart?.let {
-            it.isEnabled = sharedPrefs.getBoolean(UPDATE_ON_START, true)
+            it.isChecked = sharedPrefs.getBoolean(UPDATE_ON_START, true)
             it.onPreferenceChangeListener = Preference.OnPreferenceChangeListener{ _, value ->
                 sharedPrefs.edit().putBoolean(UPDATE_ON_START, value as Boolean).apply()
                 true

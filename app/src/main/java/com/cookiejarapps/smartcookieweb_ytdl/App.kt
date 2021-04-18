@@ -9,6 +9,7 @@ import androidx.preference.PreferenceManager
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.cookiejarapps.smartcookieweb_ytdl.fragments.SettingsFragment
+import com.cookiejarapps.smartcookieweb_ytdl.youtubedl.CustomUpdater
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -28,7 +29,7 @@ class App : Application() {
                     YoutubeDL.getInstance().init(this@App)
                     FFmpeg.getInstance().init(this@App)
                     if(sharedPrefs.getBoolean(UPDATE_ON_START, true)){
-                        updateYoutubeDL()
+                       updateYoutubeDL()
                     }
                 }
             } catch (e: Exception) {
@@ -39,7 +40,7 @@ class App : Application() {
     }
 
     suspend fun updateYoutubeDL(){
-        val result = YoutubeDL.getInstance().updateYoutubeDL(applicationContext)
+        val result = CustomUpdater.update(applicationContext)
         if (result != YoutubeDL.UpdateStatus.ALREADY_UP_TO_DATE) {
             withContext(Dispatchers.Main) {
                 Toast.makeText(applicationContext, R.string.update_found, Toast.LENGTH_SHORT)
