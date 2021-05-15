@@ -4,15 +4,14 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigation
@@ -27,13 +26,10 @@ import com.cookiejarapps.smartcookieweb_ytdl.item.VideoInfoItem
 import com.cookiejarapps.smartcookieweb_ytdl.models.LoadState
 import com.cookiejarapps.smartcookieweb_ytdl.models.VideoInfoViewModel
 import com.cookiejarapps.smartcookieweb_ytdl.worker.DownloadWorker
-import com.google.android.exoplayer2.MediaItem
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_video_info.*
 import kotlinx.android.synthetic.main.fragment_video_info.view.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 
 
 class VideoBottomSheetFragment : BottomSheetDialogFragment(),
@@ -83,31 +79,35 @@ class VideoBottomSheetFragment : BottomSheetDialogFragment(),
         videoFormatsModel.vidFormats.observe(viewLifecycleOwner, { t ->
             (video_list.adapter as VideoAdapter).updateAdapter(t)
 
-            if(t != null){
+            if (t != null) {
                 videoName.text = t.title
             }
         })
         videoFormatsModel.loadState.observe(viewLifecycleOwner, { t ->
             when (t) {
                 LoadState.INITIAL -> {
+                    openInApp.visibility = View.GONE
                     videoThumbnail.visibility = View.GONE
                     videoName.visibility = View.GONE
                     video_list.visibility = View.GONE
                     progressBar.visibility = View.VISIBLE
                 }
                 LoadState.LOADING -> {
+                    openInApp.visibility = View.GONE
                     videoThumbnail.visibility = View.GONE
                     videoName.visibility = View.GONE
                     video_list.visibility = View.GONE
                     progressBar.visibility = View.VISIBLE
                 }
                 LoadState.LOADED -> {
+                    openInApp.visibility = View.VISIBLE
                     videoThumbnail.visibility = View.VISIBLE
                     videoName.visibility = View.VISIBLE
                     video_list.visibility = View.VISIBLE
                     progressBar.visibility = View.GONE
                 }
                 LoadState.ERRORED -> {
+                    openInApp.visibility = View.GONE
                     videoThumbnail.visibility = View.GONE
                     videoName.visibility = View.GONE
                     video_list.visibility = View.GONE
@@ -121,6 +121,13 @@ class VideoBottomSheetFragment : BottomSheetDialogFragment(),
                 picasso.load(this)
                     .into(videoThumbnail)
             } ?: videoThumbnail.setImageResource(R.drawable.ic_video)
+        })
+        vidFormatsVm.url.observe(viewLifecycleOwner, { bestQualityUrl ->
+            openInApp.setOnClickListener {
+                val intent = Intent(Intent.ACTION_VIEW)
+                intent.setDataAndType(Uri.parse(bestQualityUrl), "video/mp4")
+                startActivity(intent)
+            }
         })
     }
 

@@ -43,15 +43,26 @@
         android:layout_height="0dp"
         android:layout_marginStart="12dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="12dp"
         android:gravity="center_vertical"
         android:maxLines="2"
         android:singleLine="false"
         android:text="Video Name"
         app:layout_constraintBottom_toTopOf="@+id/video_list"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/openInApp"
         app:layout_constraintStart_toEndOf="@+id/videoThumbnail"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/openInApp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_open_in_new" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/video_list"
