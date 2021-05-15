@@ -12,30 +12,6 @@
     android:clickable="true"
     android:focusable="true">
 
-    <com.google.android.exoplayer2.ui.PlayerView
-        android:id="@+id/video_player"
-        android:layout_width="match_parent"
-        android:layout_height="225dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/video_list"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginHorizontal="10dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/video_player" >
-
-    </androidx.recyclerview.widget.RecyclerView>
-
     <ImageView
         android:id="@+id/app_icon"
         android:layout_width="wrap_content"
@@ -62,45 +38,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/app_icon"
         app:tint="?colorOnSurface" />
-
-    <TextView
-        android:id="@+id/error_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/invalid_url"
-        android:textAlignment="center"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/urlInputLayout" />
-
-    <TextView
-        android:id="@+id/loading_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/data"
-        android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/loading_indicator"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <com.google.android.material.progressindicator.LinearProgressIndicator
-        android:id="@+id/loading_indicator"
-        android:layout_width="128dp"
-        android:layout_height="wrap_content"
-        android:elevation="4dp"
-        android:indeterminate="true"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/urlInputLayout"

@@ -17,6 +17,7 @@ class VideoInfoViewModel : ViewModel() {
     val vidFormats: MutableLiveData<VideoInfo> = MutableLiveData()
     val loadState: MutableLiveData<LoadState> = MutableLiveData(LoadState.INITIAL)
     val url: MutableLiveData<String> = MutableLiveData()
+    val thumbnail: MutableLiveData<String> = MutableLiveData()
     lateinit var selectedItem: VideoInfoItem.VideoFormatItem
 
     private fun submit(vidInfoItems: VideoInfo?) {
@@ -29,6 +30,10 @@ class VideoInfoViewModel : ViewModel() {
 
     private fun updateUrl(url: String?) {
         this.url.postValue(url)
+    }
+
+    private fun updateThumbnail(thumbnail: String?) {
+        this.thumbnail.postValue(thumbnail)
     }
 
     fun fetchInfo(url: String) {
@@ -55,6 +60,7 @@ class VideoInfoViewModel : ViewModel() {
             }
 
             updateLoading(LoadState.LOADED)
+            updateThumbnail(vidInfo.thumbnail)
             updateUrl(bestQualityUrl)
             submit(vidInfo)
         }

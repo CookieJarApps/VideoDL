@@ -8,11 +8,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -20,19 +17,13 @@ import android.webkit.URLUtil
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.content.ContextCompat.checkSelfPermission
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.text.toSpannable
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import androidx.work.*
 import com.cookiejarapps.smartcookieweb_ytdl.MainActivity
 import com.cookiejarapps.smartcookieweb_ytdl.R
-import com.cookiejarapps.smartcookieweb_ytdl.adapters.VideoAdapter
-import com.cookiejarapps.smartcookieweb_ytdl.adapters.VideoInfoListener
 import com.cookiejarapps.smartcookieweb_ytdl.item.VideoInfoItem
-import com.cookiejarapps.smartcookieweb_ytdl.models.LoadState
 import com.cookiejarapps.smartcookieweb_ytdl.models.VideoInfoViewModel
 import com.cookiejarapps.smartcookieweb_ytdl.worker.DownloadWorker
 import com.cookiejarapps.smartcookieweb_ytdl.worker.DownloadWorker.Companion.audioCodecKey
@@ -43,17 +34,12 @@ import com.cookiejarapps.smartcookieweb_ytdl.worker.DownloadWorker.Companion.siz
 import com.cookiejarapps.smartcookieweb_ytdl.worker.DownloadWorker.Companion.urlKey
 import com.cookiejarapps.smartcookieweb_ytdl.worker.DownloadWorker.Companion.videoCodecKey
 import com.cookiejarapps.smartcookieweb_ytdl.worker.DownloadWorker.Companion.videoId
-import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-import com.huxq17.download.DownloadProvider
 import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.android.synthetic.main.fragment_home.view.*
+
 
 class HomeFragment : Fragment(),
     SAFDialogFragment.DialogListener {
-
-    lateinit var player: SimpleExoPlayer
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -74,26 +60,25 @@ class HomeFragment : Fragment(),
     }
 
     private fun initialize(view: View) {
-        player = SimpleExoPlayer.Builder(DownloadProvider.context).build()
-        video_player.player = player
-        video_player.resizeMode = RESIZE_MODE_ZOOM
 
         urlEditText.setOnEditorActionListener { v, actionId, event ->
             val handled = false
             if (actionId == EditorInfo.IME_ACTION_GO) {
-                val vidFormatsVm =
+                /*val vidFormatsVm =
                     ViewModelProvider(activity as MainActivity).get(VideoInfoViewModel::class.java)
-                vidFormatsVm.fetchInfo(urlEditText.text.toString())
+                vidFormatsVm.fetchInfo(urlEditText.text.toString())*/
                 view.let { activity?.hideKeyboard(it) }
+                openBottomSheet(urlEditText.text.toString())
             }
             handled
         }
 
         urlInputLayout.setEndIconOnClickListener {
-            val vidFormatsVm =
+           /* val vidFormatsVm =
                 ViewModelProvider(activity as MainActivity).get(VideoInfoViewModel::class.java)
-            vidFormatsVm.fetchInfo(urlEditText.text.toString())
+            vidFormatsVm.fetchInfo(urlEditText.text.toString())*/
             view.let { activity?.hideKeyboard(it) }
+            openBottomSheet(urlEditText.text.toString())
         }
 
         urlEditText.setOnFocusChangeListener { _: View, b: Boolean ->
@@ -119,79 +104,15 @@ class HomeFragment : Fragment(),
                 urlEditText.showDropDown()
             }
         }
+    }
 
-
-        val videoFormatsModel =
-            ViewModelProvider(activity as MainActivity).get(VideoInfoViewModel::class.java)
-        with(view.video_list) {
-            adapter =
-                VideoAdapter(VideoInfoListener listener@{
-                    videoFormatsModel.selectedItem = it
-                    if (!isStoragePermissionGranted()) {
-                        return@listener
-                    }
-                    SAFDialogFragment().show(
-                        childFragmentManager,
-                        downloadLocationDialogTag
-                    )
-
-                })
-        }
-        videoFormatsModel.vidFormats.observe(viewLifecycleOwner, { t ->
-            (video_list.adapter as VideoAdapter).updateAdapter(t)
-        })
-        videoFormatsModel.loadState.observe(viewLifecycleOwner, { t ->
-            when (t) {
-                LoadState.INITIAL -> {
-                    loading_indicator.visibility = GONE
-                    loading_text.visibility = GONE
-                    //video_list.visibility = GONE
-                    urlEditText.visibility = VISIBLE
-                    urlInputLayout.visibility = VISIBLE
-                    start_text.visibility = VISIBLE
-                    error_text.visibility = GONE
-                    app_icon.visibility = VISIBLE
-                    video_player.visibility = GONE
-                }
-                LoadState.LOADING -> {
-                    loading_indicator.visibility = VISIBLE
-                    loading_text.visibility = VISIBLE
-                    urlEditText.visibility = GONE
-                    urlInputLayout.visibility = GONE
-                    start_text.visibility = GONE
-                    video_list.visibility = GONE
-                    error_text.visibility = GONE
-                    app_icon.visibility = GONE
-                    video_player.visibility = GONE
-                }
-                LoadState.LOADED -> {
-                    loading_indicator.visibility = GONE
-                    loading_text.visibility = GONE
-                    start_text.visibility = GONE
-                    urlEditText.visibility = GONE
-                    urlInputLayout.visibility = GONE
-                    video_list.visibility = VISIBLE
-                    app_icon.visibility = GONE
-                    video_player.visibility = VISIBLE
-                }
-                LoadState.ERRORED -> {
-                    loading_indicator.visibility = GONE
-                    loading_text.visibility = GONE
-                    video_list.visibility = GONE
-                    urlEditText.visibility = VISIBLE
-                    start_text.visibility = VISIBLE
-                    error_text.visibility = VISIBLE
-                    video_player.visibility = GONE
-                }
-            }
-        })
-        videoFormatsModel.url.observe(viewLifecycleOwner, Observer {
-            it?.apply {
-                val mediaItem: MediaItem = MediaItem.fromUri(it)
-                player.setMediaItem(mediaItem)
-                player.prepare()
-            }
-        })
+    fun openBottomSheet(url: String){
+        val videoBottomSheetFragment: VideoBottomSheetFragment =
+            VideoBottomSheetFragment.newInstance(url)
+        videoBottomSheetFragment.show(
+            requireActivity().supportFragmentManager,
+            "video_bottom_sheet"
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -316,11 +237,6 @@ class HomeFragment : Fragment(),
                 downloadLocationDialogTag
             )
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        player.release()
     }
 
     companion object {

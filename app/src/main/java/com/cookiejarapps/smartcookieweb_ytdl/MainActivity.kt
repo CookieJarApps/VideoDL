@@ -16,7 +16,9 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
+import com.cookiejarapps.smartcookieweb_ytdl.fragments.VideoBottomSheetFragment
 import com.cookiejarapps.smartcookieweb_ytdl.models.VideoInfoViewModel
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), NavActivity {
@@ -73,9 +75,7 @@ class MainActivity : AppCompatActivity(), NavActivity {
 
             intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
                 if (URLUtil.isValidUrl(it)) {
-                    val videoModel =
-                        ViewModelProvider(this).get(VideoInfoViewModel::class.java)
-                    videoModel.fetchInfo(it)
+                    openBottomSheet(it)
                 }
                 else{
                     Toast.makeText(applicationContext, R.string.invalid_url, Toast.LENGTH_SHORT)
@@ -83,6 +83,15 @@ class MainActivity : AppCompatActivity(), NavActivity {
                 }
             }
         }
+    }
+
+    fun openBottomSheet(url: String){
+        val videoBottomSheetFragment: VideoBottomSheetFragment =
+            VideoBottomSheetFragment.newInstance(url)
+        videoBottomSheetFragment.show(
+            supportFragmentManager,
+            "video_bottom_sheet"
+        )
     }
 
     override fun hideNav() {

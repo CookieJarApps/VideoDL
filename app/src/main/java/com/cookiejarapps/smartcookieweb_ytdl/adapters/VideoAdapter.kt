@@ -45,7 +45,7 @@ class VideoAdapter(private val clickListener: VideoInfoListener) :
                     )
                 }
                 items.reverse()
-                items.add(0, VideoInfoItem.VideoHeaderItem(vidInfo))
+                //items.add(0, VideoInfoItem.VideoHeaderItem(vidInfo))
             }
 
             withContext(Dispatchers.Main) {
@@ -70,7 +70,7 @@ class VideoAdapter(private val clickListener: VideoInfoListener) :
                     } else {
                         icon.setImageResource(R.drawable.ic_video)
                         info.text =
-                            "${vidFormat.ext}, ${size}, ${vidItem.vidFormat.width}x${vidItem.vidFormat.height}"
+                            "${vidItem.vidFormat.width}x${vidItem.vidFormat.height}, ${vidFormat.ext}, ${size}"
                     }
                     setOnClickListener { clickListener.onClick(vidItem) }
                 }
@@ -101,33 +101,15 @@ class VideoAdapter(private val clickListener: VideoInfoListener) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when (viewType) {
-            0 -> HeaderViewHolder.from(
+        return ViewHolder.from(
                 parent
             )
-            1 -> ViewHolder.from(
-                parent
-            )
-            else -> throw ClassCastException("Unknown viewType $viewType")
-        }
     }
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
             is VideoInfoItem.VideoHeaderItem -> 0
             is VideoInfoItem.VideoFormatItem -> 1
-        }
-    }
-
-    class HeaderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        companion object {
-            fun from(parent: ViewGroup): HeaderViewHolder {
-                val layoutInflater = LayoutInflater.from(parent.context)
-                val view = layoutInflater.inflate(R.layout.video_info, parent, false)
-                return HeaderViewHolder(
-                    view
-                )
-            }
         }
     }
 
