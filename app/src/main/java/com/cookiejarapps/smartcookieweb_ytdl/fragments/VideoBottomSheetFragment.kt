@@ -2,6 +2,7 @@ package com.cookiejarapps.smartcookieweb_ytdl.fragments
 
 import android.Manifest
 import android.app.Activity
+import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -18,8 +19,8 @@ import androidx.navigation.Navigation
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.work.*
-import com.cookiejarapps.smartcookieweb_ytdl.MainActivity
 import com.cookiejarapps.smartcookieweb_ytdl.R
+import com.cookiejarapps.smartcookieweb_ytdl.MainActivity
 import com.cookiejarapps.smartcookieweb_ytdl.adapters.VideoAdapter
 import com.cookiejarapps.smartcookieweb_ytdl.adapters.VideoInfoListener
 import com.cookiejarapps.smartcookieweb_ytdl.item.VideoInfoItem
@@ -152,55 +153,74 @@ class VideoBottomSheetFragment : BottomSheetDialogFragment(),
         }
     }
     private fun startDownload(vidFormatItem: VideoInfoItem.VideoFormatItem, downloadDir: String) {
-        val videoInfo = vidFormatItem.vidInfo
-        val videoFormat = vidFormatItem.vidFormat
-        val workTag = videoInfo.id
-        val workManager = WorkManager.getInstance(activity?.applicationContext!!)
-        val state = workManager.getWorkInfosByTag(workTag).get()?.getOrNull(0)?.state
-        val running = state === WorkInfo.State.RUNNING || state === WorkInfo.State.ENQUEUED
-        if (running) {
+        val downloader = PreferenceManager.getDefaultSharedPreferences(context).getString(
+            DOWNLOAD_MANAGER, resources.getString(
+                R.string.internal
+            )
+        )
+        val downloaderActivity = PreferenceManager.getDefaultSharedPreferences(context).getString(
+            DOWNLOAD_MANAGER_ACTIVITY, ""
+        )
+
+        if(downloader == resources.getString(R.string.internal)){
+            val videoInfo = vidFormatItem.vidInfo
+            val videoFormat = vidFormatItem.vidFormat
+            val workTag = videoInfo.id
+            val workManager = WorkManager.getInstance(activity?.applicationContext!!)
+            val state = workManager.getWorkInfosByTag(workTag).get()?.getOrNull(0)?.state
+            val running = state === WorkInfo.State.RUNNING || state === WorkInfo.State.ENQUEUED
+            if (running) {
+                Toast.makeText(
+                    context,
+                    R.string.download_already_running,
+                    Toast.LENGTH_LONG
+                ).show()
+                return
+            }
+            val workData = workDataOf(
+                DownloadWorker.urlKey to videoInfo.webpageUrl,
+                DownloadWorker.nameKey to videoInfo.title,
+                DownloadWorker.formatIdKey to videoFormat.formatId,
+                DownloadWorker.audioCodecKey to videoFormat.acodec,
+                DownloadWorker.videoCodecKey to videoFormat.vcodec,
+                DownloadWorker.downloadDirKey to downloadDir,
+                DownloadWorker.sizeKey to videoFormat.filesize,
+                DownloadWorker.videoId to videoInfo.id
+            )
+            val workRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
+                .addTag(workTag)
+                .setInputData(workData)
+                .build()
+
+            workManager.enqueueUniqueWork(
+                workTag,
+                ExistingWorkPolicy.KEEP,
+                workRequest
+            )
             Toast.makeText(
                 context,
-                R.string.download_already_running,
+                R.string.download_queued,
                 Toast.LENGTH_LONG
             ).show()
-            return
+
+
+            val navController = Navigation.findNavController(
+                requireActivity(),
+                R.id.nav_host_fragment
+            )
+            val navOptions = NavOptions.Builder().setLaunchSingleTop(true).build()
+            navController.navigate(R.id.downloads_fragment, null, navOptions)
+
+            dismiss()
         }
-        val workData = workDataOf(
-            DownloadWorker.urlKey to videoInfo.webpageUrl,
-            DownloadWorker.nameKey to videoInfo.title,
-            DownloadWorker.formatIdKey to videoFormat.formatId,
-            DownloadWorker.audioCodecKey to videoFormat.acodec,
-            DownloadWorker.videoCodecKey to videoFormat.vcodec,
-            DownloadWorker.downloadDirKey to downloadDir,
-            DownloadWorker.sizeKey to videoFormat.filesize,
-            DownloadWorker.videoId to videoInfo.id
-        )
-        val workRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
-            .addTag(workTag)
-            .setInputData(workData)
-            .build()
-
-        workManager.enqueueUniqueWork(
-            workTag,
-            ExistingWorkPolicy.KEEP,
-            workRequest
-        )
-        Toast.makeText(
-            context,
-            R.string.download_queued,
-            Toast.LENGTH_LONG
-        ).show()
-
-
-        val navController = Navigation.findNavController(
-            requireActivity(),
-            R.id.nav_host_fragment
-        )
-        val navOptions = NavOptions.Builder().setLaunchSingleTop(true).build()
-        navController.navigate(R.id.downloads_fragment, null, navOptions)
-
-        dismiss()
+        else{
+            val launchIntent: Intent = requireActivity().applicationContext.packageManager
+                .getLaunchIntentForPackage(downloader!!)!!
+            launchIntent.setComponent(ComponentName(downloader!!, downloaderActivity!!))
+            launchIntent.action = Intent.ACTION_VIEW
+            launchIntent.data = Uri.parse(vidFormatItem.vidFormat.url)
+            startActivity(launchIntent)
+        }
     }
 
     private fun setDownloadLocation(path: String) {
@@ -264,5 +284,7 @@ class VideoBottomSheetFragment : BottomSheetDialogFragment(),
         const val downloadLocationDialogTag = "download_location_chooser_dialog"
         private const val OPEN_DIRECTORY_REQUEST_CODE = 37321
         private const val DOWNLOAD_LOCATION = "download"
+        private const val DOWNLOAD_MANAGER = "download_manager"
+        private const val DOWNLOAD_MANAGER_ACTIVITY = "download_manager_activity"
     }
 }

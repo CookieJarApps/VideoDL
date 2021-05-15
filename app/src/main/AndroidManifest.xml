@@ -8,8 +8,12 @@
     <queries>
         <package android:name="com.cookiegames.smartcookie"/>
         <package android:name="com.cookiejarapps.smartcookiebeta"/>
+        <package android:name="com.cookiejarapps.android.smartcookieweb"/>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="http" />
+        </intent>
     </queries>
-
     <application
         android:name="com.cookiejarapps.smartcookieweb_ytdl.App"
         android:allowBackup="false"

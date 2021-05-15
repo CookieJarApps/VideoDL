@@ -8,4 +8,10 @@
         android:icon="@drawable/ic_download"
         app:iconSpaceReserved="true" />
 
+    <Preference
+        android:key="download_manager"
+        android:title="@string/downloader"
+        android:icon="@drawable/ic_pie_chart"
+        app:iconSpaceReserved="true" />
+
 </PreferenceScreen>

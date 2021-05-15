@@ -2,23 +2,21 @@ package com.cookiejarapps.smartcookieweb_ytdl.fragments
 
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
+import android.content.pm.ResolveInfo
 import android.net.Uri
 import android.os.Bundle
 import android.provider.DocumentsContract
+import android.util.Log
 import android.view.Menu
 import android.view.View
-import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
-import androidx.preference.SwitchPreference
-import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkInfo
-import androidx.work.WorkManager
 import com.cookiejarapps.smartcookieweb_ytdl.NavActivity
 import com.cookiejarapps.smartcookieweb_ytdl.R
-import com.yausername.youtubedl_android.YoutubeDL
 
 
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -35,6 +33,16 @@ class SettingsFragment : PreferenceFragmentCompat() {
             location?.apply { updatePathInSummary(it, this) } ?: it.setSummary(R.string.placeholder)
             it.onPreferenceClickListener = Preference.OnPreferenceClickListener {
                 openDirectoryChooser()
+                true
+            }
+        }
+
+        val downloadManagerPref: Preference? =
+            findPreference(DOWNLOAD_MANAGER)
+        downloadManagerPref?.let {
+            updateDownloadManager(it)
+            it.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+                setDownloadManager(it)
                 true
             }
         }
@@ -98,8 +106,71 @@ class SettingsFragment : PreferenceFragmentCompat() {
             ?: run { preference.summary = path }
     }
 
+    private fun setDownloadManager(preference: Preference){
+        var packageManager = requireActivity().getPackageManager()
+        var intent = Intent(Intent.ACTION_VIEW)
+        intent.setData(Uri.parse("https://cookiejarapps.com/blank.mp4"))
+        var list = packageManager.queryIntentActivities(intent,
+        PackageManager.MATCH_ALL)
+
+        val nameList: MutableList<CharSequence> = emptyList<CharSequence>().toMutableList()
+        for(i in list){
+            if(i.activityInfo.name != null){ nameList.add(i.activityInfo.loadLabel(packageManager)) }
+        }
+        nameList.add(0, resources.getString(R.string.internal))
+
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle(requireContext().resources.getString(R.string.downloader))
+
+        builder.setItems(nameList.toTypedArray()) { dialog, which ->
+            val editor = PreferenceManager.getDefaultSharedPreferences(context).edit()
+            if(which == 0){
+                editor.putString(DOWNLOAD_MANAGER, resources.getString(R.string.internal)).apply()
+            }
+            else{
+                editor.putString(DOWNLOAD_MANAGER, list[which - 1].activityInfo.packageName).apply()
+                editor.putString(DOWNLOAD_MANAGER_ACTIVITY, list[which - 1].activityInfo.name).apply()
+            }
+            updateDownloadManager(preference)
+        }
+
+        val dialog = builder.create()
+        dialog.show()
+    }
+
+    private fun updateDownloadManager(preference: Preference) {
+        val downloader = PreferenceManager.getDefaultSharedPreferences(context).getString(
+            DOWNLOAD_MANAGER, resources.getString(
+                R.string.internal
+            )
+        )
+
+        val name: String = if(downloader != resources.getString(R.string.internal)){
+            var packageManager = requireActivity().getPackageManager()
+            var intent = Intent(Intent.ACTION_VIEW)
+            intent.setData(Uri.parse("https://cookiejarapps.com/blank.mp4"))
+            var list = packageManager.queryIntentActivities(intent,
+                PackageManager.MATCH_ALL)
+
+            var final = resources.getString(R.string.internal)
+            for(i in list){
+                if(i.activityInfo.packageName == downloader){
+                    final = i.activityInfo.applicationInfo.loadLabel(packageManager).toString()
+                }
+            }
+            final
+        }
+        else{
+            resources.getString(R.string.internal)
+        }
+
+        preference.summary = name
+    }
+
     companion object {
         private const val OPEN_DIRECTORY_REQUEST_CODE = 42070
         private const val DOWNLOAD_LOCATION = "download"
+        private const val DOWNLOAD_MANAGER = "download_manager"
+        private const val DOWNLOAD_MANAGER_ACTIVITY = "download_manager_activity"
     }
 }

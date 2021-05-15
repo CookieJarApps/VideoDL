@@ -33,4 +33,7 @@
     <string name="update_on_start">Update youtube-dl on app start</string>
     <string name="update_found">Youtube-dl updated!</string>
     <string name="eta">%1$o seconds remaining</string>
+    <string name="downloader">Downloader</string>
+    <string name="internal">Internal</string>
+    <string name="external">External</string>
 </resources>
