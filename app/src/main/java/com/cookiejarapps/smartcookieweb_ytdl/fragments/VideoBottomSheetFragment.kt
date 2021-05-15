@@ -92,6 +92,7 @@ class VideoBottomSheetFragment : BottomSheetDialogFragment(),
                     videoName.visibility = View.GONE
                     video_list.visibility = View.GONE
                     progressBar.visibility = View.VISIBLE
+                    errorMessage.visibility = View.GONE
                 }
                 LoadState.LOADING -> {
                     openInApp.visibility = View.GONE
@@ -99,6 +100,7 @@ class VideoBottomSheetFragment : BottomSheetDialogFragment(),
                     videoName.visibility = View.GONE
                     video_list.visibility = View.GONE
                     progressBar.visibility = View.VISIBLE
+                    errorMessage.visibility = View.GONE
                 }
                 LoadState.LOADED -> {
                     openInApp.visibility = View.VISIBLE
@@ -106,6 +108,7 @@ class VideoBottomSheetFragment : BottomSheetDialogFragment(),
                     videoName.visibility = View.VISIBLE
                     video_list.visibility = View.VISIBLE
                     progressBar.visibility = View.GONE
+                    errorMessage.visibility = View.GONE
                 }
                 LoadState.ERRORED -> {
                     openInApp.visibility = View.GONE
@@ -113,6 +116,7 @@ class VideoBottomSheetFragment : BottomSheetDialogFragment(),
                     videoName.visibility = View.GONE
                     video_list.visibility = View.GONE
                     progressBar.visibility = View.GONE
+                    errorMessage.visibility = View.VISIBLE
                 }
             }
         })
