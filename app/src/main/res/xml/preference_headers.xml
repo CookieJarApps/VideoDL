@@ -14,4 +14,17 @@
         android:icon="@drawable/ic_pie_chart"
         app:iconSpaceReserved="true" />
 
+    <Preference
+        android:summary="https://vcs.cookiejarapps.com/CookieJarApps/VideoDL/issues"
+        android:title="@string/report_an_issue"
+        android:icon="@drawable/ic_baseline_error">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://vcs.cookiejarapps.com/CookieJarApps/VideoDL/issues">
+            <extra
+                android:name="SOURCE"
+                android:value="SELF" />
+        </intent>
+    </Preference>
+
 </PreferenceScreen>

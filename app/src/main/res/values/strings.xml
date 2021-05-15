@@ -36,4 +36,5 @@
     <string name="downloader">Downloader</string>
     <string name="internal">Internal</string>
     <string name="external">External</string>
+    <string name="report_an_issue">Report an issue</string>
 </resources>
