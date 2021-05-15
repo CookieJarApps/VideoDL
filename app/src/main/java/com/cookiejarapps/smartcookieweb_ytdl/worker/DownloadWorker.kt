@@ -87,12 +87,12 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) :
         var destUri: Uri? = null
         try {
             YoutubeDL.getInstance()
-                .execute(request) { progress, _ ->
+                .execute(request) { progress, etaInSeconds ->
                     if(isStopped){
                         tmpFile.deleteRecursively()
                     }
                     else{
-                        showProgress(id.hashCode(), name, progress.toInt(), timestamp)
+                        showProgress(id.hashCode(), name, progress.toInt(), etaInSeconds, timestamp)
                     }
                 }
 
@@ -130,7 +130,7 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) :
         return Result.success()
     }
 
-    private fun showProgress(id: Int, name: String, progress: Int = 0, timestamp: Long) {
+    private fun showProgress(id: Int, name: String, progress: Int = 0, eta: Long = 0, timestamp: Long) {
         val downloadsDao = DownloadDatabase.getDatabase(
             applicationContext
         ).downloadsDao()
@@ -153,6 +153,7 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) :
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(name)
             .setProgress(100, progress, false)
+            .setSubText(applicationContext.resources.getString(R.string.eta, eta))
             .build()
         notificationManager?.notify(id, notification)
     }

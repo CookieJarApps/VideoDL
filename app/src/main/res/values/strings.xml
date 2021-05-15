@@ -32,4 +32,5 @@
     <string name="parts">parts</string>
     <string name="update_on_start">Update youtube-dl on app start</string>
     <string name="update_found">Youtube-dl updated!</string>
+    <string name="eta">%1$o seconds remaining</string>
 </resources>
