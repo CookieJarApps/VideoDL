@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.motion.widget.MotionLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:layoutDescription="@xml/collapsable_video"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.cookiejarapps.smartcookieweb_ytdl.MainActivity"
@@ -16,7 +15,7 @@
         android:id="@+id/app_icon"
         android:layout_width="wrap_content"
         android:layout_height="64dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="64dp"
         android:adjustViewBounds="true"
         android:cropToPadding="true"
         android:padding="8dp"
@@ -34,6 +33,7 @@
         android:text="@string/app_name"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/app_icon"
@@ -41,19 +41,19 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/urlInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="51dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
+        app:endIconDrawable="@drawable/ic_round_check_circle"
+        app:endIconMode="custom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/start_text"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        app:endIconMode="custom"
-        app:endIconDrawable="@drawable/ic_round_check_circle">
+        app:layout_constraintTop_toBottomOf="@+id/start_text">
 
-       <!-- <com.google.android.material.textfield.TextInputEditText
+        <!-- <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/urlEditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -68,19 +68,19 @@
             android:id="@+id/urlEditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@null"
+            android:completionThreshold="0"
             android:ems="10"
             android:hint="@string/url"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
             android:imeActionId="373"
             android:imeActionLabel="Search"
             android:imeOptions="actionGo"
             android:inputType="textUri"
-            android:completionThreshold="0"
-            android:background="@null"/>
+            android:paddingStart="8dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="8dp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
-</androidx.constraintlayout.motion.widget.MotionLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
