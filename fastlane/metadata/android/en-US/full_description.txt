@@ -1,0 +1,6 @@
+A simple, light and fast video downloader for 100+ sites. Based on youtube-dl.
+
+Features:
+- Open source
+- Modern, simple UI
+- Intergration with SmartCookieWeb
