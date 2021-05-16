@@ -66,11 +66,11 @@ class VideoAdapter(private val clickListener: VideoInfoListener) :
                     if (vidFormat.acodec != "none" && vidFormat.vcodec == "none") {
                         icon.setImageResource(R.drawable.ic_audio)
                         info.text =
-                            "${vidFormat.ext}, ${size}"
+                            "${vidFormat.ext}\n${size}"
                     } else {
                         icon.setImageResource(R.drawable.ic_video)
                         info.text =
-                            "${vidItem.vidFormat.width}x${vidItem.vidFormat.height}, ${vidFormat.ext}, ${size}"
+                            "${vidItem.vidFormat.width}x${vidItem.vidFormat.height}\n${vidFormat.ext}\n${size}"
                     }
                     setOnClickListener { clickListener.onClick(vidItem) }
                 }
