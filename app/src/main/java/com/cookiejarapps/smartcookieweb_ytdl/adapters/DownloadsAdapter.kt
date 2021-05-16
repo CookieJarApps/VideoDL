@@ -1,13 +1,8 @@
 package com.cookiejarapps.smartcookieweb_ytdl.adapters
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.cookiejarapps.smartcookieweb_ytdl.R
 import com.cookiejarapps.smartcookieweb_ytdl.database.Download
@@ -38,7 +33,7 @@ class DownloadsAdapter : RecyclerView.Adapter<DownloadsAdapter.ViewHolder>() {
         with(holder.itemView) {
             download_title.text = downloadList[position].name
             download_progress.setProgressCompat(downloadList[position].downloadPercent.toInt(), true)
-            percentage.text = downloadList[position].downloadPercent.toString() + "%"
+            download_info.text = "${downloadList[position].downloadPercent}% "
             when(downloadList[position].fileType) {
                 "audio" -> icon.setImageResource(R.drawable.ic_audio)
                 "video" ->icon.setImageResource(R.drawable.ic_video)

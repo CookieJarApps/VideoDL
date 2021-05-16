@@ -15,24 +15,28 @@
         <TextView
             android:id="@+id/download_title"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="36dp"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
             android:ellipsize="end"
-            android:singleLine="true"
+            android:maxLines="2"
+            android:singleLine="false"
+            android:textColor="#000000"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/icon"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/percentage"
+            android:id="@+id/download_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="16dp"
             android:paddingHorizontal="5dp"
             android:textAlignment="textEnd"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintStart_toEndOf="@+id/icon"
+            app:layout_constraintTop_toBottomOf="@+id/download_title" />
 
         <ImageView
             android:id="@+id/icon"
@@ -40,6 +44,7 @@
             android:layout_height="48dp"
             android:layout_marginLeft="2dp"
             android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
             android:background="@drawable/ic_circle_background"
             android:padding="8dp"
             android:src="@drawable/ic_audio"
