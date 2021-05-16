@@ -37,7 +37,7 @@ class DownloadsAdapter : RecyclerView.Adapter<DownloadsAdapter.ViewHolder>() {
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         with(holder.itemView) {
             download_title.text = downloadList[position].name
-            download_progress.progress = downloadList[position].downloadPercent.toInt()
+            download_progress.setProgressCompat(downloadList[position].downloadPercent.toInt(), true)
             percentage.text = downloadList[position].downloadPercent.toString() + "%"
             when(downloadList[position].fileType) {
                 "audio" -> icon.setImageResource(R.drawable.ic_audio)
