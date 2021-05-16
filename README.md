@@ -17,9 +17,7 @@ In lower versions of the browser, open the dropdown menu, choose the "Share" opt
 # Features
 
 - Download videos from hundreds of sites in various resolutions
-- ~Stream videos from YouTube without ads~ (coming soon)
-- ~Intergration with SmartCookieWeb download manager~ (coming soon)
-
+- 
 # Why is this a seperate app?
 
 1) Adding youtube-dl alone into SmartCookieWeb would increase the app size by 10MB, so instead of increasing the app size to add a feature most users won't use, it's split into a seperate app
