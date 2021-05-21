@@ -115,14 +115,14 @@ class DownloadsFragment : Fragment() {
                                         val repository =
                                             DownloadsRepository(downloadsDao)
 
+                                        GlobalScope.launch {
+                                            repository.deleteDownloads((list.adapter as DownloadsAdapter).getDownloadList()[position])
+                                        }
+
                                         DocumentFile.fromSingleUri(
                                             requireContext(),
                                             (list.adapter as DownloadsAdapter).getDownloadList()[position].downloadPath.toUri()
                                         )?.delete()
-
-                                        GlobalScope.launch {
-                                            repository.deleteDownloads((list.adapter as DownloadsAdapter).getDownloadList()[position])
-                                        }
 
                                         val updatedList =
                                             (list.adapter as DownloadsAdapter).getDownloadList()
@@ -145,9 +145,6 @@ class DownloadsFragment : Fragment() {
                             builder.setItems(downloads) { _, which ->
                                 when (which) {
                                     0 -> {
-                                        val workManager = WorkManager.getInstance(activity?.applicationContext!!)
-                                        workManager.cancelAllWorkByTag((list.adapter as DownloadsAdapter).getDownloadList()[which].videoId)
-
                                         val downloadsDao = DownloadDatabase.getDatabase(
                                             context!!
                                         ).downloadsDao()
@@ -157,6 +154,9 @@ class DownloadsFragment : Fragment() {
                                         GlobalScope.launch {
                                             repository.deleteDownloads((list.adapter as DownloadsAdapter).getDownloadList()[position])
                                         }
+
+                                        val workManager = WorkManager.getInstance(activity?.applicationContext!!)
+                                        workManager.cancelAllWorkByTag((list.adapter as DownloadsAdapter).getDownloadList()[which].videoId)
 
                                         val updatedList =
                                             (list.adapter as DownloadsAdapter).getDownloadList()
