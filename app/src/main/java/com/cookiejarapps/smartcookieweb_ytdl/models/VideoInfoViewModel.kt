@@ -1,6 +1,7 @@
 package com.cookiejarapps.smartcookieweb_ytdl.models
 
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,6 +19,7 @@ class VideoInfoViewModel : ViewModel() {
     val loadState: MutableLiveData<LoadState> = MutableLiveData(LoadState.INITIAL)
     val url: MutableLiveData<String> = MutableLiveData()
     val thumbnail: MutableLiveData<String> = MutableLiveData()
+    val error: MutableLiveData<String> = MutableLiveData()
     lateinit var selectedItem: VideoInfoItem.VideoFormatItem
 
     private fun submit(vidInfoItems: VideoInfo?) {
@@ -34,6 +36,10 @@ class VideoInfoViewModel : ViewModel() {
 
     private fun updateThumbnail(thumbnail: String?) {
         this.thumbnail.postValue(thumbnail)
+    }
+
+    private fun updateErrorMessage(error: String?) {
+        this.error.postValue(error)
     }
 
     fun fetchInfo(url: String) {
@@ -56,6 +62,7 @@ class VideoInfoViewModel : ViewModel() {
                 }
             } catch (e: Exception) {
                 updateLoading(LoadState.ERRORED)
+                updateErrorMessage(e.localizedMessage)
                 return@launch
             }
 

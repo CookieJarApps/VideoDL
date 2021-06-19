@@ -84,7 +84,7 @@ class VideoBottomSheetFragment : BottomSheetDialogFragment(),
                 videoName.text = t.title
             }
         })
-        videoFormatsModel.loadState.observe(viewLifecycleOwner, { t ->
+        videoFormatsModel.loadState.observe(viewLifecycleOwner) { t ->
             when (t) {
                 LoadState.INITIAL -> {
                     openInApp.visibility = View.GONE
@@ -93,6 +93,7 @@ class VideoBottomSheetFragment : BottomSheetDialogFragment(),
                     video_list.visibility = View.GONE
                     progressBar.visibility = View.VISIBLE
                     errorMessage.visibility = View.GONE
+                    errorDetails.visibility = View.GONE
                 }
                 LoadState.LOADING -> {
                     openInApp.visibility = View.GONE
@@ -101,6 +102,7 @@ class VideoBottomSheetFragment : BottomSheetDialogFragment(),
                     video_list.visibility = View.GONE
                     progressBar.visibility = View.VISIBLE
                     errorMessage.visibility = View.GONE
+                    errorDetails.visibility = View.GONE
                 }
                 LoadState.LOADED -> {
                     openInApp.visibility = View.VISIBLE
@@ -109,6 +111,7 @@ class VideoBottomSheetFragment : BottomSheetDialogFragment(),
                     video_list.visibility = View.VISIBLE
                     progressBar.visibility = View.GONE
                     errorMessage.visibility = View.GONE
+                    errorDetails.visibility = View.GONE
                 }
                 LoadState.ERRORED -> {
                     openInApp.visibility = View.GONE
@@ -117,23 +120,29 @@ class VideoBottomSheetFragment : BottomSheetDialogFragment(),
                     video_list.visibility = View.GONE
                     progressBar.visibility = View.GONE
                     errorMessage.visibility = View.VISIBLE
+                    errorDetails.visibility = View.GONE
                 }
             }
-        })
-        vidFormatsVm.thumbnail.observe(viewLifecycleOwner, {
+        }
+        // If VideoInfoViewModel sends an error message, show it
+        vidFormatsVm.error.observe(viewLifecycleOwner) { error ->
+            errorDetails.visibility = View.VISIBLE
+            errorDetails.text = error
+        }
+        vidFormatsVm.thumbnail.observe(viewLifecycleOwner) {
             it?.apply {
                 val picasso = Picasso.get()
                 picasso.load(this)
                     .into(videoThumbnail)
             } ?: videoThumbnail.setImageResource(R.drawable.ic_video)
-        })
-        vidFormatsVm.url.observe(viewLifecycleOwner, { bestQualityUrl ->
+        }
+        vidFormatsVm.url.observe(viewLifecycleOwner) { bestQualityUrl ->
             openInApp.setOnClickListener {
                 val intent = Intent(Intent.ACTION_VIEW)
                 intent.setDataAndType(Uri.parse(bestQualityUrl), "video/mp4")
                 startActivity(intent)
             }
-        })
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
