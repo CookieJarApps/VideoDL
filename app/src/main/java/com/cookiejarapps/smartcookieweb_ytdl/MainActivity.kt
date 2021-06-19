@@ -35,7 +35,8 @@ class MainActivity : AppCompatActivity(), NavActivity {
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.home_fragment,
-                R.id.downloads_fragment
+                R.id.downloads_fragment,
+                R.id.console_fragment
             )
         )
         toolbar.setupWithNavController(navController, appBarConfiguration)

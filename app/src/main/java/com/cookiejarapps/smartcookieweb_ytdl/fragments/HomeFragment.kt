@@ -64,9 +64,6 @@ class HomeFragment : Fragment(),
         urlEditText.setOnEditorActionListener { v, actionId, event ->
             val handled = false
             if (actionId == EditorInfo.IME_ACTION_GO) {
-                /*val vidFormatsVm =
-                    ViewModelProvider(activity as MainActivity).get(VideoInfoViewModel::class.java)
-                vidFormatsVm.fetchInfo(urlEditText.text.toString())*/
                 view.let { activity?.hideKeyboard(it) }
                 openBottomSheet(urlEditText.text.toString())
             }
@@ -74,9 +71,6 @@ class HomeFragment : Fragment(),
         }
 
         urlInputLayout.setEndIconOnClickListener {
-           /* val vidFormatsVm =
-                ViewModelProvider(activity as MainActivity).get(VideoInfoViewModel::class.java)
-            vidFormatsVm.fetchInfo(urlEditText.text.toString())*/
             view.let { activity?.hideKeyboard(it) }
             openBottomSheet(urlEditText.text.toString())
         }
@@ -203,26 +197,6 @@ class HomeFragment : Fragment(),
                     Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
         }
         startActivityForResult(intent, OPEN_DIRECTORY_REQUEST_CODE)
-    }
-
-    private fun isStoragePermissionGranted(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ) == PackageManager.PERMISSION_GRANTED
-            ) {
-                true
-            } else {
-                requestPermissions(
-                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                    1
-                )
-                false
-            }
-        } else {
-            true
-        }
     }
 
     override fun onRequestPermissionsResult(

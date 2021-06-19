@@ -11,4 +11,9 @@
         android:icon="@drawable/ic_cloud_download"
         android:title="@string/downloads" />
 
+    <item
+        android:id="@+id/console_fragment"
+        android:icon="@drawable/ic_code"
+        android:title="@string/console" />
+
 </menu>

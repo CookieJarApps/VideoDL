@@ -18,6 +18,12 @@
         tools:layout="@layout/fragment_downloads_list" />
 
     <fragment
+        android:id="@+id/console_fragment"
+        android:name="com.cookiejarapps.smartcookieweb_ytdl.fragments.ConsoleFragment"
+        android:label="@string/console"
+        tools:layout="@layout/fragment_console" />
+
+    <fragment
         android:id="@+id/settings_fragment"
         android:name="com.cookiejarapps.smartcookieweb_ytdl.fragments.SettingsFragment"
         android:label="Settings" />
