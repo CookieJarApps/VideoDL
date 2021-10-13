@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity(), NavActivity {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val navController = Navigation.findNavController(
             this,
             R.id.nav_host_fragment
