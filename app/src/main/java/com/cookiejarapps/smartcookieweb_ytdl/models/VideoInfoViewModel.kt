@@ -1,14 +1,12 @@
 package com.cookiejarapps.smartcookieweb_ytdl.models
 
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cookiejarapps.smartcookieweb_ytdl.item.VideoInfoItem
-import com.yausername.youtubedl_android.YoutubeDL
-import com.yausername.youtubedl_android.YoutubeDLRequest
-import com.yausername.youtubedl_android.mapper.VideoInfo
+import com.cookiejarapps.smartcookieweb_ytdl.dl.Ytdl
+import com.cookiejarapps.smartcookieweb_ytdl.dl.YtdlRequest
+import com.cookiejarapps.smartcookieweb_ytdl.dl.mapper.VideoInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -52,12 +50,12 @@ class VideoInfoViewModel : ViewModel() {
             try {
                 withContext(Dispatchers.IO) {
                     // Get video data
-                    vidInfo = YoutubeDL.getInstance().getInfo(url)
+                    vidInfo = Ytdl.instance.getInfo(url)
 
                     // Get high quality URL for playback
-                    val request = YoutubeDLRequest(url)
+                    val request = YtdlRequest(url)
                     request.addOption("-f", "best")
-                    val streamInfo = YoutubeDL.getInstance().getInfo(request)
+                    val streamInfo = Ytdl.instance.getInfo(request)
                     bestQualityUrl = streamInfo.url
                 }
             } catch (e: Exception) {

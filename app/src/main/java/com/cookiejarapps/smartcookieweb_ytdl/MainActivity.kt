@@ -1,5 +1,6 @@
 package com.cookiejarapps.smartcookieweb_ytdl
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -16,10 +17,14 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
+import com.cookiejarapps.smartcookieweb_ytdl.database.DownloadDatabase
+import com.cookiejarapps.smartcookieweb_ytdl.database.DownloadsRepository
 import com.cookiejarapps.smartcookieweb_ytdl.fragments.VideoBottomSheetFragment
 import com.cookiejarapps.smartcookieweb_ytdl.models.VideoInfoViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(), NavActivity {
 

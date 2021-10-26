@@ -5,18 +5,14 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.*
-import android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN
 import android.widget.EditText
 import android.widget.TextView
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.fragment.app.Fragment
-import androidx.work.*
 import com.cookiejarapps.smartcookieweb_ytdl.R
-import com.yausername.youtubedl_android.YoutubeDLException
+import com.cookiejarapps.smartcookieweb_ytdl.dl.YtdlException
 import kotlinx.android.synthetic.main.fragment_console.*
-import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.apache.commons.io.IOUtils
@@ -99,7 +95,7 @@ class ConsoleFragment : Fragment() {
         try {
             process = processBuilder.start()
         } catch (e: IOException) {
-            throw YoutubeDLException(e)
+            throw YtdlException(e)
         }
 
         requireActivity().runOnUiThread{

@@ -1,7 +1,7 @@
 package com.cookiejarapps.smartcookieweb_ytdl.item
 
-import com.yausername.youtubedl_android.mapper.VideoFormat
-import com.yausername.youtubedl_android.mapper.VideoInfo
+import com.cookiejarapps.smartcookieweb_ytdl.dl.mapper.VideoFormat
+import com.cookiejarapps.smartcookieweb_ytdl.dl.mapper.VideoInfo
 
 sealed class VideoInfoItem {
     abstract val id: String

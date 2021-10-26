@@ -77,7 +77,7 @@ class DownloadsFragment : Fragment() {
                 object : DownloadListListener {
                     override fun onClick(view: View?, position: Int) {
                         if((list.adapter as DownloadsAdapter).getDownloadList()[position].downloadPercent == 100.00){
-                            openFile((list.adapter as DownloadsAdapter).getDownloadList()[position].downloadPath, requireContext())
+                            openFile((list.adapter as DownloadsAdapter).getDownloadList()[position].downloadPath!!, requireContext())
                         }
                     }
 
@@ -121,7 +121,7 @@ class DownloadsFragment : Fragment() {
 
                                         DocumentFile.fromSingleUri(
                                             requireContext(),
-                                            (list.adapter as DownloadsAdapter).getDownloadList()[position].downloadPath.toUri()
+                                            (list.adapter as DownloadsAdapter).getDownloadList()[position].downloadPath!!.toUri()
                                         )?.delete()
 
                                         val updatedList =

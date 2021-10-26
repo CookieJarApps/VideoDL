@@ -8,7 +8,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
 
-@Database(entities = [Download::class], version = 2, exportSchema = true)
+@Database(entities = [Download::class], version = 3, exportSchema = true)
 abstract class DownloadDatabase : RoomDatabase() {
 
     abstract fun downloadsDao(): DownloadsDao
@@ -30,6 +30,7 @@ abstract class DownloadDatabase : RoomDatabase() {
                     DownloadDatabase::class.java,
                     name
                 ).addMigrations(MIGRATION_1_2)
+                    .fallbackToDestructiveMigration()
                     .build()
                 dbInstance = instance
                 return instance

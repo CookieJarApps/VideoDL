@@ -9,17 +9,17 @@ data class Download(
     @ColumnInfo(name = "name")
     val name: String,
 
-    @ColumnInfo(name = "time")
-    val timestamp: Long
-) {
     @PrimaryKey(autoGenerate = true)
-    var id: Long = 0
+    val uid: Int = 0
+) {
+    @ColumnInfo(name = "timestamp")
+    var timestamp: Long = 0
 
     @ColumnInfo(name = "download_progress")
     var downloadPercent: Double = 0.0
 
     @ColumnInfo(name = "download_path")
-    lateinit var downloadPath: String
+    var downloadPath: String? = null
 
     @ColumnInfo(name = "file_type")
     lateinit var fileType: String

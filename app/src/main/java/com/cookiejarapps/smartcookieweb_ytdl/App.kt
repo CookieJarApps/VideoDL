@@ -6,7 +6,7 @@ import android.app.Application
 import android.util.Log
 import android.widget.Toast
 import com.yausername.ffmpeg.FFmpeg
-import com.yausername.youtubedl_android.YoutubeDL
+import com.cookiejarapps.smartcookieweb_ytdl.dl.Ytdl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -20,7 +20,7 @@ class App : Application() {
         GlobalScope.launch {
             try {
                 withContext(Dispatchers.IO) {
-                    YoutubeDL.getInstance().init(this@App)
+                    Ytdl.instance.init(this@App)
                     FFmpeg.getInstance().init(this@App)
                 }
             } catch (e: Exception) {

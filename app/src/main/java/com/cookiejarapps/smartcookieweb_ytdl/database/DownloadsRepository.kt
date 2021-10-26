@@ -6,8 +6,12 @@ class DownloadsRepository(private val downloadsDao: DownloadsDao) {
 
     val allDownloads: LiveData<List<Download>> = downloadsDao.getAll()
 
+    suspend fun getDownloadById(uid: Int): Download{
+        return downloadsDao.getDownloadById(uid)
+    }
+
     suspend fun getDownloadByTimestamp(timestamp: Long): Download{
-        return downloadsDao.getDownloadByTimeStamp(timestamp)
+        return downloadsDao.getDownloadByTimestamp(timestamp)
     }
 
     suspend fun insertDownloads(download: Download) {

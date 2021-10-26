@@ -6,6 +6,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.provider.DocumentsContract
+import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.core.app.NotificationCompat
 import androidx.work.CoroutineWorker
@@ -15,9 +16,8 @@ import com.cookiejarapps.smartcookieweb_ytdl.R
 import com.cookiejarapps.smartcookieweb_ytdl.database.DownloadDatabase
 import com.cookiejarapps.smartcookieweb_ytdl.database.Download
 import com.cookiejarapps.smartcookieweb_ytdl.database.DownloadsRepository
-import com.yausername.youtubedl_android.YoutubeDL
-import com.yausername.youtubedl_android.YoutubeDLRequest
-import kotlinx.coroutines.CoroutineDispatcher
+import com.cookiejarapps.smartcookieweb_ytdl.dl.Ytdl
+import com.cookiejarapps.smartcookieweb_ytdl.dl.YtdlRequest
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.apache.commons.io.IOUtils
@@ -60,23 +60,26 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) :
         val repository =
             DownloadsRepository(downloadsDao)
         val download =
-            Download(name, timestamp)
+            Download(name)
+
+        download.timestamp = timestamp
         download.downloadPercent = 0.00
         download.fileType = if (videoCodec == "none" && audioCodec != "none"){ "audio" } else{ "video" }
-
         download.videoId = inputData.getString(videoId)!!
 
         repository.insertDownloads(download)
 
+        val uid = repository.getDownloadByTimestamp(timestamp).uid
+
         val foregroundInfo = ForegroundInfo(notificationId, notification)
         setForeground(foregroundInfo)
 
-        val request = YoutubeDLRequest(url)
-        val tmpFile = File.createTempFile("ytdl", null, applicationContext.externalCacheDir)
+        val request = YtdlRequest(url)
+        val tmpFile = File.createTempFile("ytdl", uid.toString(), applicationContext.externalCacheDir)
         tmpFile.delete()
         tmpFile.mkdir()
         tmpFile.deleteOnExit()
-        request.addOption("-o", "${tmpFile.absolutePath}/%(title)s.%(ext)s")
+        request.addOption("-o", "${tmpFile.absolutePath}/[${uid}-%(id)s] %(title)s.%(ext)s")
         val videoOnly = videoCodec != "none" && audioCodec == "none"
         if (videoOnly) {
             request.addOption("-f", "${formatId}+bestaudio")
@@ -86,13 +89,13 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) :
 
         var destUri: Uri? = null
         try {
-            YoutubeDL.getInstance()
+            Ytdl.instance
                 .execute(request) { progress, etaInSeconds ->
                     if(isStopped){
                         tmpFile.deleteRecursively()
                     }
                     else{
-                        showProgress(id.hashCode(), name, progress.toInt(), etaInSeconds, timestamp)
+                        showProgress(id.hashCode(), name, progress.toInt(), etaInSeconds, uid)
                     }
                 }
 
@@ -119,18 +122,16 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) :
         }
 
 
-        GlobalScope.launch {
-            val finalDownload = repository.getDownloadByTimestamp(timestamp)
-            if(finalDownload != null){
-                finalDownload.downloadPath = destUri.toString()
-                repository.updateDownloads(finalDownload)
-            }
-        }
+       GlobalScope.launch {
+            val finalDownload = repository.getDownloadById(uid)
+           finalDownload.downloadPath = destUri.toString()
+           repository.updateDownloads(finalDownload)
+       }
 
         return Result.success()
     }
 
-    private fun showProgress(id: Int, name: String, progress: Int = 0, eta: Long = 0, timestamp: Long) {
+    private fun showProgress(id: Int, name: String, progress: Int = 0, eta: Long = 0, uid: Int) {
         val downloadsDao = DownloadDatabase.getDatabase(
             applicationContext
         ).downloadsDao()
@@ -138,11 +139,9 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) :
             DownloadsRepository(downloadsDao)
 
         GlobalScope.launch {
-            val download = repository.getDownloadByTimestamp(timestamp)
-            if(download != null){
-                download.downloadPercent = progress.toDouble()
-                repository.updateDownloads(download)
-            }
+            val download = repository.getDownloadById(uid)
+            download.downloadPercent = progress.toDouble()
+            repository.updateDownloads(download)
         }
 
         val notification = NotificationCompat.Builder(

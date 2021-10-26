@@ -178,18 +178,7 @@ class VideoBottomSheetFragment : BottomSheetDialogFragment(),
         if(downloader == resources.getString(R.string.internal)){
             val videoInfo = vidFormatItem.vidInfo
             val videoFormat = vidFormatItem.vidFormat
-            val workTag = videoInfo.id
             val workManager = WorkManager.getInstance(activity?.applicationContext!!)
-            val state = workManager.getWorkInfosByTag(workTag).get()?.getOrNull(0)?.state
-            val running = state === WorkInfo.State.RUNNING || state === WorkInfo.State.ENQUEUED
-            if (running) {
-                Toast.makeText(
-                    context,
-                    R.string.download_already_running,
-                    Toast.LENGTH_LONG
-                ).show()
-                return
-            }
             val workData = workDataOf(
                 DownloadWorker.urlKey to videoInfo.webpageUrl,
                 DownloadWorker.nameKey to videoInfo.title,
@@ -201,13 +190,10 @@ class VideoBottomSheetFragment : BottomSheetDialogFragment(),
                 DownloadWorker.videoId to videoInfo.id
             )
             val workRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
-                .addTag(workTag)
                 .setInputData(workData)
                 .build()
 
-            workManager.enqueueUniqueWork(
-                workTag,
-                ExistingWorkPolicy.KEEP,
+            workManager.enqueue(
                 workRequest
             )
             Toast.makeText(

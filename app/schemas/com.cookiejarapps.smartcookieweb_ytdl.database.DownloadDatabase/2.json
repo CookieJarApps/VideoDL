@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "bbe7bdfed97ea8e04519a578f16cd5be",
+    "identityHash": "85da1fd9a6fa6d0bd19fcd6b2b2696d2",
     "entities": [
       {
         "tableName": "downloads_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `time` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `download_progress` REAL NOT NULL, `download_path` TEXT NOT NULL, `file_type` TEXT NOT NULL, `video_id` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` INTEGER NOT NULL, `download_progress` REAL NOT NULL, `download_path` TEXT NOT NULL, `file_type` TEXT NOT NULL, `video_id` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "name",
@@ -15,14 +15,14 @@
             "notNull": true
           },
           {
-            "fieldPath": "timestamp",
-            "columnName": "time",
+            "fieldPath": "uid",
+            "columnName": "uid",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "id",
-            "columnName": "id",
+            "fieldPath": "timestamp",
+            "columnName": "timestamp",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -53,7 +53,7 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "id"
+            "uid"
           ],
           "autoGenerate": true
         },
@@ -64,7 +64,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'bbe7bdfed97ea8e04519a578f16cd5be')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '85da1fd9a6fa6d0bd19fcd6b2b2696d2')"
     ]
   }
 }

@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.yausername.youtubedl_android.mapper.VideoInfo
+import com.cookiejarapps.smartcookieweb_ytdl.dl.mapper.VideoInfo
 import com.cookiejarapps.smartcookieweb_ytdl.R
 import com.cookiejarapps.smartcookieweb_ytdl.Utils
 import com.cookiejarapps.smartcookieweb_ytdl.item.VideoInfoItem
