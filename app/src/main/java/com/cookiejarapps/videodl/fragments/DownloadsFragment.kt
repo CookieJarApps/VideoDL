@@ -93,10 +93,9 @@ class DownloadsFragment : Fragment() {
                                             repository.deleteDownloads((list.adapter as DownloadsAdapter).getDownloadList()[position])
                                         }
 
-                                        val updatedList =
-                                            (list.adapter as DownloadsAdapter).getDownloadList()
-                                                .drop(position)
-                                        (list.adapter as DownloadsAdapter).updateDataSet(updatedList)
+                                        downloadsViewModel.downloadList.observe(viewLifecycleOwner, { downloads ->
+                                            downloads?.let { (list.adapter as DownloadsAdapter).updateDataSet(downloads) }
+                                        })
                                     }
                                     1 -> {
                                         val downloadsDao = DownloadDatabase.getDatabase(
@@ -114,10 +113,9 @@ class DownloadsFragment : Fragment() {
                                             (list.adapter as DownloadsAdapter).getDownloadList()[position].downloadPath!!.toUri()
                                         )?.delete()
 
-                                        val updatedList =
-                                            (list.adapter as DownloadsAdapter).getDownloadList()
-                                                .drop(position)
-                                        (list.adapter as DownloadsAdapter).updateDataSet(updatedList)
+                                        downloadsViewModel.downloadList.observe(viewLifecycleOwner, { downloads ->
+                                            downloads?.let { (list.adapter as DownloadsAdapter).updateDataSet(downloads) }
+                                        })
                                     }
                                 }
                             }
@@ -148,10 +146,9 @@ class DownloadsFragment : Fragment() {
                                         val workManager = WorkManager.getInstance(activity?.applicationContext!!)
                                         workManager.cancelAllWorkByTag((list.adapter as DownloadsAdapter).getDownloadList()[which].videoId)
 
-                                        val updatedList =
-                                            (list.adapter as DownloadsAdapter).getDownloadList()
-                                                .drop(position)
-                                        (list.adapter as DownloadsAdapter).updateDataSet(updatedList)
+                                        downloadsViewModel.downloadList.observe(viewLifecycleOwner, { downloads ->
+                                            downloads?.let { (list.adapter as DownloadsAdapter).updateDataSet(downloads) }
+                                        })
                                     }
                                 }
                             }
