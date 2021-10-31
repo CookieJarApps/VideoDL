@@ -8,6 +8,7 @@ import android.os.Build
 import android.provider.DocumentsContract
 import android.webkit.MimeTypeMap
 import androidx.core.app.NotificationCompat
+import androidx.preference.PreferenceManager
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
@@ -17,6 +18,7 @@ import com.cookiejarapps.videodl.database.Download
 import com.cookiejarapps.videodl.database.DownloadsRepository
 import com.cookiejarapps.videodl.dl.Ytdl
 import com.cookiejarapps.videodl.dl.YtdlRequest
+import com.cookiejarapps.videodl.fragments.SettingsFragment
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.apache.commons.io.IOUtils
@@ -85,6 +87,12 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) :
         } else {
             request.addOption("-f", formatId)
         }
+
+        val split = PreferenceManager.getDefaultSharedPreferences(applicationContext).getInt(
+            "download_split", 1
+        )
+
+        request.addOption("--concurrent-fragments", split)
 
         var destUri: Uri? = null
         try {

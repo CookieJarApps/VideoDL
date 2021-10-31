@@ -18,12 +18,15 @@ import com.cookiejarapps.videodl.R
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
+    var downloadLocationPref: Preference? = null
+    var downloadSplitPref: Preference? = null
+    var downloadManagerPref: Preference? = null
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preference_headers, rootKey)
         val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
 
-        val downloadLocationPref: Preference? =
+        downloadLocationPref =
             findPreference(DOWNLOAD_LOCATION)
         downloadLocationPref?.let {
             val location = sharedPrefs.getString(DOWNLOAD_LOCATION, null)
@@ -34,7 +37,23 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
         }
 
-        val downloadManagerPref: Preference? =
+        downloadSplitPref =
+            findPreference(DOWNLOAD_SPLIT)
+        downloadSplitPref?.let {
+            updateDownloadSplit(it)
+            it.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+                setDownloadSplit(it)
+                true
+            }
+        }
+
+        val downloader = PreferenceManager.getDefaultSharedPreferences(context).getString(
+            DOWNLOAD_MANAGER, resources.getString(
+                R.string.internal
+            )
+        )
+
+        downloadManagerPref =
             findPreference(DOWNLOAD_MANAGER)
         downloadManagerPref?.let {
             updateDownloadManager(it)
@@ -43,6 +62,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 true
             }
         }
+
+        downloadSplitPref?.isEnabled = downloader == resources.getString(R.string.internal)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -103,11 +124,38 @@ class SettingsFragment : PreferenceFragmentCompat() {
             ?: run { preference.summary = path }
     }
 
+    private fun setDownloadSplit(preference: Preference){
+        val list: List<Int> = 1.rangeTo(16).toList()
+        val items: Array<CharSequence> = list.map { it.toString() }.toTypedArray()
+
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle(requireContext().resources.getString(R.string.download_split))
+
+        builder.setItems(items) { dialog, which ->
+            val editor = PreferenceManager.getDefaultSharedPreferences(context).edit()
+            editor.putInt(DOWNLOAD_SPLIT, which + 1).apply()
+            updateDownloadSplit(preference)
+        }
+
+        val dialog = builder.create()
+        dialog.show()
+    }
+
+    private fun updateDownloadSplit(preference: Preference) {
+        val split = PreferenceManager.getDefaultSharedPreferences(context).getInt(
+            DOWNLOAD_SPLIT, 1
+        )
+
+        val part = if(split == 1) resources.getString(R.string.part) else resources.getString(R.string.parts)
+
+        preference.summary = "$split $part"
+    }
+
     private fun setDownloadManager(preference: Preference){
-        var packageManager = requireActivity().getPackageManager()
-        var intent = Intent(Intent.ACTION_VIEW)
+        val packageManager = requireActivity().getPackageManager()
+        val intent = Intent(Intent.ACTION_VIEW)
         intent.setData(Uri.parse("https://cookiejarapps.com/blank.mp4"))
-        var list = packageManager.queryIntentActivities(intent,
+        val list = packageManager.queryIntentActivities(intent,
         PackageManager.MATCH_ALL)
 
         val nameList: MutableList<CharSequence> = emptyList<CharSequence>().toMutableList()
@@ -143,10 +191,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         )
 
         val name: String = if(downloader != resources.getString(R.string.internal)){
-            var packageManager = requireActivity().getPackageManager()
-            var intent = Intent(Intent.ACTION_VIEW)
+            val packageManager = requireActivity().getPackageManager()
+            val intent = Intent(Intent.ACTION_VIEW)
             intent.setData(Uri.parse("https://cookiejarapps.com/blank.mp4"))
-            var list = packageManager.queryIntentActivities(intent,
+            val list = packageManager.queryIntentActivities(intent,
                 PackageManager.MATCH_ALL)
 
             var final = resources.getString(R.string.internal)
@@ -161,6 +209,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
             resources.getString(R.string.internal)
         }
 
+        downloadSplitPref?.isEnabled = downloader == resources.getString(R.string.internal)
+
         preference.summary = name
     }
 
@@ -168,6 +218,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         private const val OPEN_DIRECTORY_REQUEST_CODE = 42070
         private const val DOWNLOAD_LOCATION = "download"
         private const val DOWNLOAD_MANAGER = "download_manager"
+        private const val DOWNLOAD_SPLIT = "download_split"
         private const val DOWNLOAD_MANAGER_ACTIVITY = "download_manager_activity"
     }
 }

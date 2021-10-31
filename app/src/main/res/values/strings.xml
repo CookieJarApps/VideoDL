@@ -26,7 +26,7 @@
     <string name="copyright">Copyright</string>
     <string name="cancel">Cancel</string>
     <string name="accept">Accept</string>
-    <string name="download_split">Download split</string>
+    <string name="download_split">Download fragments</string>
     <string name="player">Player</string>
     <string name="part">part</string>
     <string name="parts">parts</string>
