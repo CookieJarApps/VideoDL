@@ -59,7 +59,7 @@ class VideoAdapter(private val clickListener: VideoInfoListener) :
             is ViewHolder -> {
                 val vidItem = getItem(position) as VideoInfoItem.VideoFormatItem
                 val vidFormat = vidItem.vidFormat
-                val size = Utils.fileSizeToString(vidFormat.filesize)
+                val size = if(vidFormat.filesize > 0) Utils.fileSizeToString(vidFormat.filesize) else "? B"
 
                 with(holder.itemView) {
                     name.text = vidFormat.format
