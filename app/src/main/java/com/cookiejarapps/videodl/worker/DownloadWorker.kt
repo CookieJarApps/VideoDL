@@ -35,13 +35,13 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) :
 
 
     override suspend fun doWork(): Result {
-
         val url = inputData.getString(urlKey)!!
         val name = inputData.getString(nameKey)!!
         val formatId = inputData.getString(formatIdKey)!!
         val audioCodec = inputData.getString(audioCodecKey)
         val videoCodec = inputData.getString(videoCodecKey)
         val downloadDir = inputData.getString(downloadDirKey)!!
+        val timestamp = inputData.getString(timestamp)!!.toLong()
 
         createNotificationChannel()
         val notificationId = id.hashCode()
@@ -54,7 +54,6 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) :
             .setContentText(applicationContext.getString(R.string.download_start))
             .build()
 
-        val timestamp = Date().time
         val downloadsDao = DownloadDatabase.getDatabase(
             applicationContext
         ).downloadsDao()
@@ -191,6 +190,7 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) :
         const val audioCodecKey = "acodec"
         const val videoCodecKey = "vcodec"
         const val videoId = "vid"
+        const val timestamp = "timestamp"
     }
 }
 

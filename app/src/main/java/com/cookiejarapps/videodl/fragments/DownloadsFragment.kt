@@ -144,7 +144,7 @@ class DownloadsFragment : Fragment() {
                                         }
 
                                         val workManager = WorkManager.getInstance(activity?.applicationContext!!)
-                                        workManager.cancelAllWorkByTag((list.adapter as DownloadsAdapter).getDownloadList()[which].videoId)
+                                        workManager.cancelUniqueWork((list.adapter as DownloadsAdapter).getDownloadList()[which].timestamp.toString())
 
                                         downloadsViewModel.downloadList.observe(viewLifecycleOwner, { downloads ->
                                             downloads?.let { (list.adapter as DownloadsAdapter).updateDataSet(downloads) }

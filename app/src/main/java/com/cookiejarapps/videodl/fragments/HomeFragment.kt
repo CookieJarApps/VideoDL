@@ -2,9 +2,11 @@ package com.cookiejarapps.videodl.fragments
 
 import android.app.Activity
 import android.content.ClipboardManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +18,8 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavOptions
+import androidx.navigation.Navigation
 import androidx.preference.PreferenceManager
 import androidx.work.*
 import com.cookiejarapps.videodl.MainActivity
@@ -32,6 +36,7 @@ import com.cookiejarapps.videodl.worker.DownloadWorker.Companion.urlKey
 import com.cookiejarapps.videodl.worker.DownloadWorker.Companion.videoCodecKey
 import com.cookiejarapps.videodl.worker.DownloadWorker.Companion.videoId
 import kotlinx.android.synthetic.main.fragment_home.*
+import java.util.*
 
 
 class HomeFragment : Fragment(),
@@ -133,45 +138,54 @@ class HomeFragment : Fragment(),
     }
 
     private fun startDownload(vidFormatItem: VideoInfoItem.VideoFormatItem, downloadDir: String) {
-        val videoInfo = vidFormatItem.vidInfo
-        val videoFormat = vidFormatItem.vidFormat
-        val workTag = videoInfo.id
-        val workManager = WorkManager.getInstance(activity?.applicationContext!!)
-        val state = workManager.getWorkInfosByTag(workTag).get()?.getOrNull(0)?.state
-        val running = state === WorkInfo.State.RUNNING || state === WorkInfo.State.ENQUEUED
-        if (running) {
+        val downloader = PreferenceManager.getDefaultSharedPreferences(context).getString(
+            DOWNLOAD_MANAGER, resources.getString(
+                R.string.internal
+            )
+        )
+        val downloaderActivity = PreferenceManager.getDefaultSharedPreferences(context).getString(
+            DOWNLOAD_MANAGER_ACTIVITY, ""
+        )
+
+        if(downloader == resources.getString(R.string.internal)){
+            val videoInfo = vidFormatItem.vidInfo
+            val videoFormat = vidFormatItem.vidFormat
+            val timestamp = Date().time.toString()
+            val workManager = WorkManager.getInstance(activity?.applicationContext!!)
+            val workData = workDataOf(
+                DownloadWorker.urlKey to videoInfo.webpageUrl,
+                DownloadWorker.nameKey to videoInfo.title,
+                DownloadWorker.formatIdKey to videoFormat.formatId,
+                DownloadWorker.audioCodecKey to videoFormat.acodec,
+                DownloadWorker.videoCodecKey to videoFormat.vcodec,
+                DownloadWorker.downloadDirKey to downloadDir,
+                DownloadWorker.sizeKey to videoFormat.filesize,
+                DownloadWorker.videoId to videoInfo.id,
+                DownloadWorker.timestamp to timestamp
+            )
+            val workRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
+                .setInputData(workData)
+                .build()
+
+            workManager.enqueueUniqueWork(
+                timestamp,
+                ExistingWorkPolicy.KEEP,
+                workRequest
+            )
             Toast.makeText(
                 context,
-                R.string.download_already_running,
+                R.string.download_queued,
                 Toast.LENGTH_LONG
             ).show()
-            return
         }
-        val workData = workDataOf(
-            urlKey to videoInfo.webpageUrl,
-            nameKey to videoInfo.title,
-            formatIdKey to videoFormat.formatId,
-            audioCodecKey to videoFormat.acodec,
-            videoCodecKey to videoFormat.vcodec,
-            downloadDirKey to downloadDir,
-            sizeKey to videoFormat.filesize,
-            videoId to videoInfo.id
-        )
-        val workRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
-            .addTag(workTag)
-            .setInputData(workData)
-            .build()
-
-        workManager.enqueueUniqueWork(
-            workTag,
-            ExistingWorkPolicy.KEEP,
-            workRequest
-        )
-        Toast.makeText(
-            context,
-            R.string.download_queued,
-            Toast.LENGTH_LONG
-        ).show()
+        else{
+            val launchIntent: Intent = requireActivity().applicationContext.packageManager
+                .getLaunchIntentForPackage(downloader!!)!!
+            launchIntent.setComponent(ComponentName(downloader!!, downloaderActivity!!))
+            launchIntent.action = Intent.ACTION_VIEW
+            launchIntent.data = Uri.parse(vidFormatItem.vidFormat.url)
+            startActivity(launchIntent)
+        }
     }
 
     override fun onAccept(dialog: SAFDialogFragment) {
@@ -213,6 +227,8 @@ class HomeFragment : Fragment(),
         const val downloadLocationDialogTag = "download_location_chooser_dialog"
         private const val OPEN_DIRECTORY_REQUEST_CODE = 37321
         private const val DOWNLOAD_LOCATION = "download"
+        private const val DOWNLOAD_MANAGER = "download_manager"
+        private const val DOWNLOAD_MANAGER_ACTIVITY = "download_manager_activity"
     }
 
 }

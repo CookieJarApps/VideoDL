@@ -31,6 +31,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_video_info.*
 import kotlinx.android.synthetic.main.fragment_video_info.view.*
+import java.util.*
 
 
 class VideoBottomSheetFragment : BottomSheetDialogFragment(),
@@ -178,6 +179,7 @@ class VideoBottomSheetFragment : BottomSheetDialogFragment(),
         if(downloader == resources.getString(R.string.internal)){
             val videoInfo = vidFormatItem.vidInfo
             val videoFormat = vidFormatItem.vidFormat
+            val timestamp = Date().time.toString()
             val workManager = WorkManager.getInstance(activity?.applicationContext!!)
             val workData = workDataOf(
                 DownloadWorker.urlKey to videoInfo.webpageUrl,
@@ -187,13 +189,16 @@ class VideoBottomSheetFragment : BottomSheetDialogFragment(),
                 DownloadWorker.videoCodecKey to videoFormat.vcodec,
                 DownloadWorker.downloadDirKey to downloadDir,
                 DownloadWorker.sizeKey to videoFormat.filesize,
-                DownloadWorker.videoId to videoInfo.id
-            )
+                DownloadWorker.videoId to videoInfo.id,
+                DownloadWorker.timestamp to timestamp
+                )
             val workRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
                 .setInputData(workData)
                 .build()
 
-            workManager.enqueue(
+            workManager.enqueueUniqueWork(
+                timestamp,
+                ExistingWorkPolicy.KEEP,
                 workRequest
             )
             Toast.makeText(
