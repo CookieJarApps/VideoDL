@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Toast
 import com.yausername.ffmpeg.FFmpeg
 import com.cookiejarapps.videodl.dl.Ytdl
+import com.google.android.material.color.DynamicColors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -16,6 +17,8 @@ import kotlinx.coroutines.withContext
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
+
+        DynamicColors.applyToActivitiesIfAvailable(this)
 
         GlobalScope.launch {
             try {
